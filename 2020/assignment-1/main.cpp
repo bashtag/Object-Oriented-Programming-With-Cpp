@@ -46,7 +46,7 @@ int	main(void)
 					break;
 			}
 		else
-			cout << "That wasn't a valid game type!" << endl;
+			cerr << "That wasn't a valid game type!" << endl;
 	} while (gameSelection != 1 && gameSelection != 0);
 	
 	return (0);

@@ -3,6 +3,7 @@
 #include <string>
 #include <ctime>
 #include <cstdlib>
+#include <algorithm>
 #include "lib.h"
 
 #define COLOUR_BLUE "\033[0;34m"
@@ -241,6 +242,8 @@ void	stringToUppercase(string &str)
 bool	isValidMove(vector<vector<Cell>> board, int row, int column, string direction, bool isSixthBoard)
 {
 	bool	isValid = true;
+	vector<string>	directions = {"U", "D", "L", "R",
+								"UL", "UR", "DL", "DR"};
 
 	/* Are given coordinates valid */
 	if (row >= board.size() || row < 0)
@@ -300,34 +303,56 @@ bool	isValidMove(vector<vector<Cell>> board, int row, int column, string directi
 			isValid = false;
 	}
 	/* for sixth board */
-	else if (isSixthBoard && direction == "UL")
+	else if (direction == "UL")
 	{
-		if (row <= 1 || column <= 1)
-			isValid = false;
-		else if (board[row - 1][column - 1] != Cell::peg || board[row - 2][column - 2] != Cell::empty)
+		if (isSixthBoard)
+		{
+			if (row <= 1 || column <= 1)
+				isValid = false;
+			else if (board[row - 1][column - 1] != Cell::peg || board[row - 2][column - 2] != Cell::empty)
+				isValid = false;
+		}
+		else
 			isValid = false;
 	}
-	else if (isSixthBoard && direction == "UR")
+	else if (direction == "UR")
 	{
-		if (row <= 1 || column >= board[row].size() - 2)
-			isValid = false;
-		else if (board[row - 1][column + 1] != Cell::peg || board[row - 2][column + 2] != Cell::empty)
+		if (isSixthBoard)
+		{
+			if (row <= 1 || column >= board[row].size() - 2)
+				isValid = false;
+			else if (board[row - 1][column + 1] != Cell::peg || board[row - 2][column + 2] != Cell::empty)
+				isValid = false;
+		}
+		else
 			isValid = false;
 	}
-	else if (isSixthBoard && direction == "DL")
+	else if (direction == "DL")
 	{
-		if (row >= board.size() - 2 || column <= 1)
-			isValid = false;
-		else if (board[row + 1][column - 1] != Cell::peg || board[row + 2][column - 2] != Cell::empty)
+		if (isSixthBoard)
+		{
+			if (row >= board.size() - 2 || column <= 1)
+				isValid = false;
+			else if (board[row + 1][column - 1] != Cell::peg || board[row + 2][column - 2] != Cell::empty)
+				isValid = false;
+		}
+		else
 			isValid = false;
 	}
-	else if (isSixthBoard && direction == "DR")
+	else if (direction == "DR")
 	{
-		if (row >= board.size() - 2 || column >= board[row].size() - 2)
-			isValid = false;
-		else if (board[row + 1][column + 1] != Cell::peg || board[row + 2][column + 2] != Cell::empty)
+		if (isSixthBoard)
+		{
+			if (row >= board.size() - 2 || column >= board[row].size() - 2)
+				isValid = false;
+			else if (board[row + 1][column + 1] != Cell::peg || board[row + 2][column + 2] != Cell::empty)
+				isValid = false;
+		}
+		else
 			isValid = false;
 	}
+	else if (find(directions.begin(), directions.end(), direction) == directions.end())
+		isValid = false;
 
 	return (isValid);
 }
@@ -447,7 +472,7 @@ void	humanPlayerGame(vector<vector<Cell>> board, int boardSelection)
 		if (isValidMove(board, row, column, direction, boardSelection == 6))
 			makeMove(board, row, column, direction, boardSelection == 6);
 		else
-			cout << "That was not a valid move" << endl;
+			cerr << "That was not a valid move" << endl;
 	} while (!isGameFinished(board, boardSelection));
 
 	printBoard(board);
