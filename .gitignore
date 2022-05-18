@@ -32,5 +32,7 @@
 *.app
 
 .vscode
-
+*.txt
+tempCodeRunnerFile.*
+deneme.*
 solutions

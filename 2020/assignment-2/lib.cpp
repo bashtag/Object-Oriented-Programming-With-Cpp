@@ -4,10 +4,8 @@
 #include <ctime>
 #include <cstdlib>
 #include <algorithm>
+#include <fstream>
 #include "lib.h"
-
-#define COLOUR_BLUE "\033[0;34m"
-#define DEFAULT_COLOUR "\033[0m"
 
 using namespace std;
 
@@ -230,7 +228,7 @@ void	stringToUppercase(string &str)
 }
 
 /**
- * @brief 
+ * @brief Is the given move valid for the given board?
  * 
  * @param board 
  * @param in_column 
@@ -358,7 +356,8 @@ bool	isValidMove(vector<vector<Cell>> board, int row, int column, string directi
 }
 
 /**
- * @brief Are there any valid moves
+ * @brief Are there any valid moves return true,
+ * otherwise 0
  * 
  * @param board 
  * @return true 
@@ -422,6 +421,7 @@ int	gameScore(vector<vector<Cell>> board)
  * 
  * @param board 
  * @param boardSelection 
+ * @return int 
  */
 void	humanPlayerGame(vector<vector<Cell>> board, int boardSelection)
 {
@@ -429,8 +429,10 @@ void	humanPlayerGame(vector<vector<Cell>> board, int boardSelection)
 	int	in_row;
 	char	in_column, buff;
 	string	direction;
+	string	fileSelection, fileName;
 
 	int	row, column;
+	int	moveCounter = 0;
 	
 	cout << "---- Human Player Game ----" << endl << endl;
 
@@ -457,12 +459,42 @@ void	humanPlayerGame(vector<vector<Cell>> board, int boardSelection)
 
 	do
 	{
+		direction = "";
 		printBoard(board);
-		cout << endl << "Give me a right move: ";
-		
+		cout << endl << "SAVE FILE.TXT command to save current game status to FILE.TXT file" << endl <<
+			"LOAD FILE.TXT command to load the game board from FILE.TXT file" << endl <<
+			"Give me a right move: ";
 		cin >> in_row >> in_column >> buff >> direction;
 		in_column = toupper(in_column);
 		stringToUppercase(direction);
+
+		/* it means input is not valid or input is a file selection */
+		if (direction == "")
+		{
+			cin.clear();
+			cin >> fileSelection;
+			stringToUppercase(fileSelection);
+
+			if (fileSelection.substr(0,4) == "LOAD")
+			{
+				board.clear();
+				cin >> fileName;
+				if (!loadFile(board, fileName))
+					return;
+				/* if boardSelection is 6, it can be a problem */
+				if (boardSelection == 6)
+					boardSelection = 0;
+				
+				/* to clear the input buffer */
+				continue;
+			}
+			else if (fileSelection.substr(0.4) == "SAVE")
+			{
+				cin >> fileName;
+				saveFile(board, fileName, true, moveCounter, boardSelection == 6);
+				continue;
+			}
+		}
 
 		row = in_row - 1;
 		column = (int)in_column - 'A';
@@ -470,7 +502,10 @@ void	humanPlayerGame(vector<vector<Cell>> board, int boardSelection)
 		cout << endl;
 
 		if (isValidMove(board, row, column, direction, boardSelection == 6))
+		{
 			makeMove(board, row, column, direction, boardSelection == 6);
+			moveCounter++;
+		}
 		else
 			cerr << "That was not a valid move" << endl;
 	} while (!isGameFinished(board, boardSelection));
@@ -561,7 +596,7 @@ void	getRandomValidMove(vector<vector<Cell>> board, int &row, int &column, strin
 		}
 	} while (!isValidMove(board, row, column, direction, isSixthBoard));
 
-	cout << "row, column, direction => " << row << column << direction << endl;
+	cout << "row, column, direction => " << row << " " << column << " " << direction << endl;
 }
 
 /**
@@ -577,13 +612,143 @@ void	computerGame(vector<vector<Cell>> board, int boardSelection)
 	int	row, column;
 	string	direction;
 
+	int	moveCounter = 0;
+	string	fileSelection;
+	string	fileName;
+
 	do {
 		printBoard(board);
+
+		cout << endl << "SAVE FILE.TXT command to save current game status to FILE.TXT" << endl <<
+			"LOAD FILE.TXT command to load the game board from FILE.TXT" << endl <<
+			"Or Press 1 to move: " << endl;
+		cin >> fileSelection;
+		stringToUppercase(fileSelection);
+
+
+		if (fileSelection.substr(0,4) == "LOAD")
+		{
+			board.clear();
+			cin >> fileName;
+			if (!loadFile(board, fileName))
+				return;
+			/* if boardSelection is 6, it can be a problem */
+			if (boardSelection == 6)
+				boardSelection = 0;
+			
+			/* to clear the input buffer */
+			continue;
+		}
+		else if (fileSelection.substr(0,4) == "SAVE")
+		{
+			cin >> fileName;
+			saveFile(board, fileName, true, moveCounter, boardSelection == 6);
+			continue;
+		}
+
 		getRandomValidMove(board, row, column, direction, boardSelection == 6);
 		makeMove(board, row, column, direction, boardSelection == 6);
+		moveCounter++;
 		cout << "\n" << endl;
 	} while (!isGameFinished(board, boardSelection));
 
 	printBoard(board);
 	cout << "Game Finished! Score is " << gameScore(board) << endl;
+}
+
+/**
+ * @brief to load the game board from load_file.txt file
+ * 
+ * @param board 
+ * @param fileName 
+ * @return true -> file load successfully
+ * @return false -> file wasn't able to load
+ */
+bool	loadFile(vector<vector<Cell>> &board, const string fileName)
+{
+	fstream	fileToLoad;
+	vector<Cell>	singleRow;
+	string	line;
+	int	maxColumn = 0, columnCounter = 0;
+
+	fileToLoad.open(fileName, ios::in);
+
+	if (!fileToLoad.is_open())
+	{
+		cerr << "Your file cannot be found!" << endl <<
+			"Program will be terminated..." << endl;
+		return (false);
+	}
+	while (!fileToLoad.eof())
+	{
+		getline(fileToLoad, line);
+		singleRow.clear();
+		columnCounter = 0;
+
+		for (char buff : line) {
+			cout << buff;
+			if (buff == ' ')
+				singleRow.push_back(Cell::none);
+
+			else if (buff == '.')
+				singleRow.push_back(Cell::empty);
+
+			else if (buff == 'P')
+				singleRow.push_back(Cell::peg);
+			columnCounter++;
+		}
+		if (maxColumn < columnCounter)
+			maxColumn = columnCounter;
+
+		if (line != "")
+			board.push_back(singleRow);
+
+	}
+
+	/* to avoid possible bugs */
+	for (int i = 0; i < board.size(); i++)
+		board[i].resize(maxColumn, Cell::none);
+
+	fileToLoad.close();
+
+	return (true);
+}
+
+void	saveFile(vector<vector<Cell>> board, const string fileName, const bool isHuman, const int moveCounter, const bool isSixthBoard)
+{
+	fstream	fileToSave;
+
+	fileToSave.open(fileName, ios::out);
+
+	if (!fileToSave.is_open())
+	{
+		cerr << "File wasn't able to open" << endl;
+		return;
+	}
+
+	fileToSave << "GAME TYPE:"<< endl;
+	
+	if (isHuman)
+		fileToSave << "-> Human Player Game" << endl;
+	else
+		fileToSave << "-> Computer Player Game" << endl;
+
+	fileToSave << "NUMBER OF MOVES" << endl <<
+		"-> " << moveCounter << endl;
+
+	fileToSave << "IS THE BOARD THE SIXTH BOARD" << endl;
+	
+	if (isSixthBoard)
+		fileToSave << "-> True" << endl;
+	else
+		fileToSave << "-> False" << endl;
+
+	fileToSave << "BOARD:" << endl;
+
+	for (vector<Cell> row : board)
+	{
+		for (Cell cell : row)
+			fileToSave << (int)cell << " ";
+		fileToSave << endl;
+	}
 }
