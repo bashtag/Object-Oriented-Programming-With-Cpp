@@ -406,7 +406,7 @@ int	gameScore(vector<vector<Cell>> board)
 {
 	int	score = 0;
 
-	for (vector<Cell> singleRow : board)
+	for (auto singleRow : board)
 	{
 		for (Cell cell : singleRow)
 			if (cell == Cell::peg)
@@ -429,7 +429,7 @@ void	humanPlayerGame(vector<vector<Cell>> board, int boardSelection)
 	int	in_row;
 	char	in_column, buff;
 	string	direction;
-	string	fileSelection, fileName;
+	decltype(direction)	fileSelection, fileName;
 
 	int	row, column;
 	int	moveCounter = 0;
