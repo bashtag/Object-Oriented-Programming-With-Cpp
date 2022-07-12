@@ -23,6 +23,7 @@ public:
 			void	setRow(int);
 			void	setColumn(char);
 			void	setCellType(CellType);
+			/* const means read only */
 			inline int	getRow() const {return (row);};
 			inline int	getColumn() const {return (column);};
 			inline CellType	getCellType() const {return (cellType);};
@@ -33,32 +34,82 @@ public:
 	};
 	/* Cell class end */
 
-	PegSolitaire();
-	PegSolitaire(int);
+	PegSolitaire(); /* makes board as NULL */
+	PegSolitaire(int); /* makes the board according to board type*/
 	PegSolitaire(int, int);
+	PegSolitaire(string); /* loads from file */
 
-	void	printBoard(vector<vector<Cell>> board);
-	void	makeMove(vector<vector<Cell>> &, int, int, string, bool);
-	bool	isValidMove(vector<vector<Cell>>, int, int, string, bool);
-	bool	isGameFinished(vector<vector<Cell>>, int);
-	int	gameScore(vector<vector<Cell>>);
-	void	getRandomValidMove(vector<vector<Cell>>, int&, int&, string&, bool);
+	vector<vector<Cell>>	createBoard(int); /* creating board according to board selection 1-6 */
+	void	printBoard(vector<vector<Cell>> board); /* printing board */
+	/**
+	 * @brief board, row, column, direction
+	 * 
+	 */
+	void	makeMove(vector<vector<Cell>> &, int, int, string, bool); /* making a valid move to the board */
+	/**
+	 * @brief board, row, column, direction
+	 * 
+	 */
+	bool	isValidMove(vector<vector<Cell>>, int, int, string, bool); /* checks if move is valid */
+	bool	isGameFinished(vector<vector<Cell>>, int); /* checks is there any valid move on the board */
+	int	gameScore(vector<vector<Cell>>); /* return the game score of the table */
+	/**
+	 * @brief board, row, column, direction
+	 * 
+	 */
+	void	getRandomValidMove(vector<vector<Cell>>, int&, int&, string&, bool); /* creating a valid move for computer player */
 
-	void	humanPlayerGame(vector<vector<Cell>>, int);
-	void	computerGame(vector<vector<Cell>>, int);
+	void	humanPlayerGame(vector<vector<Cell>>, int); /* initializing a human game */
+	void	computerGame(vector<vector<Cell>>, int); /* initializing a computer game */
 
-	bool	loadFile(vector<vector<Cell>>&, const string);
-	void	saveFile(vector<vector<Cell>>, const string, const bool, const int, const bool);
+	/* file functions */
+	bool	loadFile(vector<vector<Cell>>&, const string); /* loading file from txt file */
+	void	saveFile(vector<vector<Cell>>, const string, const bool, const int, const bool); /* saving the status of the game to the txt file */
+
+	/* Getter and Setters for state of the board */
+	void	setNumOfPegs(int);
+	void	setNumOfEmptyCells(int);
+	void	setNumOfTakenPegs(int);
+
+	inline int	getNumOfPegs() const {return (numOfPegs);};
+	inline int	getNumOfEmptyCells() const {return (numOfEmptyCells);};
+	inline int	getNumOfTakenPegs() const {return (numOfTakenPegs);};
+	/* Getter and Setters ended */
+
+	/* const cannot using with static member function */
+	inline static int	getTotalPegs() {return (totalPegs);};
+	/**
+	 * @brief Set the Total Pegs object
+	 * 
+	 * @param change int variable that holds change in pegs
+	 */
+	void	setTotalPegs(int);
+
+	/* game functions */
+	void	play(); /* plays automatically for a single step */
+	void	play(Cell); /* takes a cell position and it plays the user for a single step*/
+	/**
+	 * @brief plays the game by asking the user the board type first then automatically plays the game until it ends
+	 */
+	void	playGame();
 
 private:
+	/* my variables that are not accessible outside of the class */
 	int	resize;
 	int	boardType;
+	bool	isTypeSix;
+	int	numOfPegs, numOfEmptyCells, numOfTakenPegs;
+	/* When static keyword is used, variable or data members or functions can not be modified again.
+	 * It is allocated for the lifetime of program.
+	 * Static functions can be called directly by using class name.
+	 */
+	static int	totalPegs;
 	vector <vector<Cell>> board;
 
 };
 
 
-vector<vector<PegSolitaire::Cell>>	createBoard(int boardSelection);
+// vector<vector<PegSolitaire::Cell>>	createBoard(int boardSelection);
 
 // void	printBoard(vector<vector<PegSolitaire::Cell>> board);
 
