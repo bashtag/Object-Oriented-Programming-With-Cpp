@@ -19,9 +19,9 @@ public:
 	{
 		public:
 			Cell();
-			Cell(int, char, CellType);	
+			Cell(int, int, CellType);	
 			void	setRow(int);
-			void	setColumn(char);
+			void	setColumn(int);
 			void	setCellType(CellType);
 			/* const means read only */
 			inline int	getRow() const {return (row);};
@@ -29,7 +29,7 @@ public:
 			inline CellType	getCellType() const {return (cellType);};
 		private:
 			int	row;
-			char	column;
+			int	column;
 			CellType	cellType;
 	};
 	/* Cell class end */
