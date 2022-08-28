@@ -9,90 +9,159 @@
 
 using namespace std;
 
+/* Cell Class */
+
+PegSolitaire::Cell::Cell()
+{}
+
+PegSolitaire::Cell::Cell(int _row, int _column, CellType _cell) : row(_row), column(_column), cellType(_cell)
+{}
+
+void	PegSolitaire::Cell::setRow(int _row)
+{
+	row = _row;
+}
+
+void	PegSolitaire::Cell::setColumn(int _column)
+{
+	column = _column;
+}
+
+void	PegSolitaire::Cell::setCellType(CellType _cell)
+{
+	cellType = _cell;
+}
+/* Cell Class ended */
+
+
+/* PegSolitaire Class */
+PegSolitaire::PegSolitaire()
+{}
+
+/* it creates the board according to board type */
+PegSolitaire::PegSolitaire(int _boardType) : boardType(_boardType)
+{
+	if (_boardType == 6)
+		isTypeSix = true;
+	else
+		isTypeSix = false;
+	board = createBoard();
+	numOfPegs = gameScore();
+	numOfEmptyCells = emptyCellsCounter();
+	numOfTakenPegs = 0;
+	totalPegs += numOfPegs;
+}
+
+PegSolitaire::PegSolitaire(string _fileName)
+{
+	loadFile(_fileName);
+	isTypeSix = false;
+	numOfPegs = gameScore();
+	numOfEmptyCells = emptyCellsCounter();
+	numOfTakenPegs = 0;
+	totalPegs += numOfPegs;
+}
+
+/* getters and setters */
+void	PegSolitaire::setNumOfPegs(int _numOfPegs)
+{
+	numOfPegs = _numOfPegs;
+}
+
+void	PegSolitaire::setNumOfEmptyCells(int _numOfEmptyCells)
+{
+	numOfEmptyCells = _numOfEmptyCells;
+}
+
+void	PegSolitaire::setNumOfTakenPegs(int _numOfTakenPegs)
+{
+	numOfTakenPegs = _numOfTakenPegs;
+}
+
 /**
  * @brief Create a Board object
- * 
+ *  - it has to completed -
  * @param boardSelection 
  * @return vector<vector<Cell>> 
  */
-vector<vector<Cell>>	createBoard(int boardSelection)
+vector<vector<PegSolitaire::Cell>>	PegSolitaire::createBoard()
 {
 	vector<vector<Cell>>	board;
 
-	switch (boardSelection)
+	switch (boardType)
 	{
 		case 1:
 			board = {
-				{Cell::none, Cell::none, Cell::peg, Cell::peg, Cell::peg, Cell::none, Cell::none},
-				{Cell::none, Cell::peg, Cell::peg, Cell::peg, Cell::peg, Cell::peg, Cell::none},
-				{Cell::peg, Cell::peg, Cell::peg, Cell::empty, Cell::peg, Cell::peg, Cell::peg},
-				{Cell::peg, Cell::peg, Cell::peg, Cell::peg, Cell::peg, Cell::peg, Cell::peg},
-				{Cell::peg, Cell::peg, Cell::peg, Cell::peg, Cell::peg, Cell::peg, Cell::peg},
-				{Cell::none, Cell::peg, Cell::peg, Cell::peg, Cell::peg, Cell::peg, Cell::none},
-				{Cell::none, Cell::none, Cell::peg, Cell::peg, Cell::peg, Cell::none, Cell::none}
+				{Cell(0, 0, CellType::none), Cell(0, 1, CellType::none), Cell(0, 2, CellType::peg), Cell(0, 3, CellType::peg), Cell(0, 4, CellType::peg), Cell(0, 5, CellType::none), Cell(0, 6, CellType::none)},
+				{Cell(1, 0, CellType::none), Cell(1, 1, CellType::peg), Cell(1, 2, CellType::peg), Cell(1, 3, CellType::peg), Cell(1, 4, CellType::peg), Cell(1, 5, CellType::peg), Cell(1, 6, CellType::none)},
+				{Cell(2, 0, CellType::peg), Cell(2, 1, CellType::peg), Cell(2, 2, CellType::peg), Cell(2, 3, CellType::empty), Cell(2, 4, CellType::peg), Cell(2, 5, CellType::peg), Cell(2, 6, CellType::peg)},
+				{Cell(3, 0, CellType::peg), Cell(3, 1, CellType::peg), Cell(3, 2, CellType::peg), Cell(3, 3, CellType::peg), Cell(3, 4, CellType::peg), Cell(3, 5, CellType::peg), Cell(3, 6, CellType::peg)},
+				{Cell(4, 0, CellType::peg), Cell(4, 1, CellType::peg), Cell(4, 2, CellType::peg), Cell(4, 3, CellType::peg), Cell(4, 4, CellType::peg), Cell(4, 5, CellType::peg), Cell(4, 6, CellType::peg)},
+				{Cell(5, 0, CellType::none), Cell(5, 1, CellType::peg), Cell(5, 2, CellType::peg), Cell(5, 3, CellType::peg), Cell(5, 4, CellType::peg), Cell(5, 5, CellType::peg), Cell(5, 6, CellType::none)},
+				{Cell(6, 0, CellType::none), Cell(6, 1, CellType::none), Cell(6, 2, CellType::peg), Cell(6, 3, CellType::peg), Cell(6, 4, CellType::peg), Cell(6, 5, CellType::none), Cell(6, 6, CellType::none)}
 			};
 			break;
 		
 		case 2:
 			board = {
-				{Cell::none, Cell::none, Cell::none, Cell::peg, Cell::peg, Cell::peg, Cell::none, Cell::none, Cell::none},
-				{Cell::none, Cell::none, Cell::none, Cell::peg, Cell::peg, Cell::peg, Cell::none, Cell::none, Cell::none},
-				{Cell::none, Cell::none, Cell::none, Cell::peg, Cell::peg, Cell::peg, Cell::none, Cell::none, Cell::none},
-				{Cell::peg, Cell::peg, Cell::peg, Cell::peg, Cell::peg, Cell::peg, Cell::peg, Cell::peg, Cell::peg},
-				{Cell::peg, Cell::peg, Cell::peg, Cell::peg, Cell::empty, Cell::peg, Cell::peg, Cell::peg, Cell::peg},
-				{Cell::peg, Cell::peg, Cell::peg, Cell::peg, Cell::peg, Cell::peg, Cell::peg, Cell::peg, Cell::peg},
-				{Cell::none, Cell::none, Cell::none, Cell::peg, Cell::peg, Cell::peg, Cell::none, Cell::none, Cell::none},
-				{Cell::none, Cell::none, Cell::none, Cell::peg, Cell::peg, Cell::peg, Cell::none, Cell::none, Cell::none},
-				{Cell::none, Cell::none, Cell::none, Cell::peg, Cell::peg, Cell::peg, Cell::none, Cell::none, Cell::none}
+				{Cell(0, 0, CellType::none), Cell(0, 1, CellType::none), Cell(0, 2, CellType::none), Cell(0, 3, CellType::peg), Cell(0, 4, CellType::peg), Cell(0, 5, CellType::peg), Cell(0, 6, CellType::none), Cell(0, 7, CellType::none), Cell(0, 8, CellType::none)},
+				{Cell(1, 0, CellType::none), Cell(1, 1, CellType::none), Cell(1, 2, CellType::none), Cell(1, 3, CellType::peg), Cell(1, 4, CellType::peg), Cell(1, 5, CellType::peg), Cell(1, 6, CellType::none), Cell(1, 7, CellType::none), Cell(1, 8, CellType::none)},
+				{Cell(2, 0, CellType::none), Cell(2, 1, CellType::none), Cell(0, 2, CellType::none), Cell(0, 3, CellType::peg), Cell(0, 4, CellType::peg), Cell(0, 5, CellType::peg), Cell(0, 6, CellType::none), Cell(0, 7, CellType::none), Cell(0, 8, CellType::none)},
+				{Cell(3, 0, CellType::peg), Cell(3, 1, CellType::peg), Cell(0, 0, CellType::peg), Cell(0, 0, CellType::peg), Cell(0, 0, CellType::peg), Cell(0, 0, CellType::peg), Cell(0, 0, CellType::peg), Cell(0, 0, CellType::peg), Cell(0, 0, CellType::peg)},
+				{Cell(4, 0, CellType::peg), Cell(4, 1, CellType::peg), Cell(0, 0, CellType::peg), Cell(0, 0, CellType::peg), Cell(0, 0, CellType::empty), Cell(0, 0, CellType::peg), Cell(0, 0, CellType::peg), Cell(0, 0, CellType::peg), Cell(0, 0, CellType::peg)},
+				{Cell(5, 0, CellType::peg), Cell(5, 1, CellType::peg), Cell(0, 0, CellType::peg), Cell(0, 0, CellType::peg), Cell(0, 0, CellType::peg), Cell(0, 0, CellType::peg), Cell(0, 0, CellType::peg), Cell(0, 0, CellType::peg), Cell(0, 0, CellType::peg)},
+				{Cell(6, 0, CellType::none), Cell(6, 1, CellType::none), Cell(0, 1, CellType::none), Cell(0, 0, CellType::peg), Cell(0, 0, CellType::peg), Cell(0, 0, CellType::peg), Cell(0, 1, CellType::none), Cell(0, 1, CellType::none), Cell(0, 1, CellType::none)},
+				{Cell(7, 0, CellType::none), Cell(7, 1, CellType::none), Cell(0, 1, CellType::none), Cell(0, 0, CellType::peg), Cell(0, 0, CellType::peg), Cell(0, 0, CellType::peg), Cell(0, 1, CellType::none), Cell(0, 1, CellType::none), Cell(0, 1, CellType::none)},
+				{Cell(8, 0, CellType::none), Cell(8, 1, CellType::none), Cell(0, 1, CellType::none), Cell(0, 0, CellType::peg), Cell(0, 0, CellType::peg), Cell(0, 0, CellType::peg), Cell(0, 1, CellType::none), Cell(0, 1, CellType::none), Cell(0, 1, CellType::none)}
 			};
 			break;
 			
 		case 3:
 			board = {
-				{Cell::none, Cell::none, Cell::peg, Cell::peg, Cell::peg, Cell::none, Cell::none, Cell::none},
-				{Cell::none, Cell::none, Cell::peg, Cell::peg, Cell::peg, Cell::none, Cell::none, Cell::none},
-				{Cell::none, Cell::none, Cell::peg, Cell::peg, Cell::peg, Cell::none, Cell::none, Cell::none},
-				{Cell::peg, Cell::peg, Cell::peg, Cell::peg, Cell::peg, Cell::peg, Cell::peg, Cell::peg},
-				{Cell::peg, Cell::peg, Cell::peg, Cell::empty, Cell::peg, Cell::peg, Cell::peg, Cell::peg},
-				{Cell::peg, Cell::peg, Cell::peg, Cell::peg, Cell::peg, Cell::peg, Cell::peg, Cell::peg},
-				{Cell::none, Cell::none, Cell::peg, Cell::peg, Cell::peg, Cell::none, Cell::none, Cell::none},
-				{Cell::none, Cell::none, Cell::peg, Cell::peg, Cell::peg, Cell::none, Cell::none, Cell::none}
+				{Cell(0, 1, CellType::none), Cell(0, 1, CellType::none), Cell(0, 0, CellType::peg), Cell(0, 0, CellType::peg), Cell(0, 0, CellType::peg), Cell(0, 1, CellType::none), Cell(0, 1, CellType::none), Cell(0, 1, CellType::none)},
+				{Cell(1, 1, CellType::none), Cell(1, 1, CellType::none), Cell(1, 0, CellType::peg), Cell(1, 0, CellType::peg), Cell(1, 0, CellType::peg), Cell(1, 1, CellType::none), Cell(1, 1, CellType::none), Cell(1, 1, CellType::none)},
+				{Cell(0, 1, CellType::none), Cell(0, 1, CellType::none), Cell(0, 0, CellType::peg), Cell(0, 0, CellType::peg), Cell(0, 0, CellType::peg), Cell(0, 1, CellType::none), Cell(0, 1, CellType::none), Cell(0, 1, CellType::none)},
+				{Cell(0, 0, CellType::peg), Cell(0, 1, CellType::peg), Cell(0, 0, CellType::peg), Cell(0, 0, CellType::peg), Cell(0, 0, CellType::peg), Cell(0, 0, CellType::peg), Cell(0, 0, CellType::peg), Cell(0, 0, CellType::peg)},
+				{Cell(0, 0, CellType::peg), Cell(0, 1, CellType::peg), Cell(0, 0, CellType::peg), Cell(0, 0, CellType::empty), Cell(0, 0, CellType::peg), Cell(0, 0, CellType::peg), Cell(0, 0, CellType::peg), Cell(0, 0, CellType::peg)},
+				{Cell(0, 0, CellType::peg), Cell(0, 1, CellType::peg), Cell(0, 0, CellType::peg), Cell(0, 0, CellType::peg), Cell(0, 0, CellType::peg), Cell(0, 0, CellType::peg), Cell(0, 0, CellType::peg), Cell(0, 0, CellType::peg)},
+				{Cell(0, 1, CellType::none), Cell(0, 1, CellType::none), Cell(0, 0, CellType::peg), Cell(0, 0, CellType::peg), Cell(0, 0, CellType::peg), Cell(0, 1, CellType::none), Cell(0, 1, CellType::none), Cell(0, 1, CellType::none)},
+				{Cell(0, 1, CellType::none), Cell(0, 1, CellType::none), Cell(0, 0, CellType::peg), Cell(0, 0, CellType::peg), Cell(0, 0, CellType::peg), Cell(0, 1, CellType::none), Cell(0, 1, CellType::none), Cell(0, 1, CellType::none)}
 			};
 			break;
 			
 		case 4:
 			board = {
-				{Cell::none, Cell::none, Cell::peg, Cell::peg, Cell::peg, Cell::none, Cell::none},
-				{Cell::none, Cell::none, Cell::peg, Cell::peg, Cell::peg, Cell::none, Cell::none},
-				{Cell::peg, Cell::peg, Cell::peg, Cell::peg, Cell::peg, Cell::peg, Cell::peg},
-				{Cell::peg, Cell::peg, Cell::peg, Cell::empty, Cell::peg, Cell::peg, Cell::peg},
-				{Cell::peg, Cell::peg, Cell::peg, Cell::peg, Cell::peg, Cell::peg, Cell::peg},
-				{Cell::none, Cell::none, Cell::peg, Cell::peg, Cell::peg, Cell::none, Cell::none},
-				{Cell::none, Cell::none, Cell::peg, Cell::peg, Cell::peg, Cell::none, Cell::none}
+				{Cell(0, 1, CellType::none), Cell(0, 1, CellType::none), Cell(0, 0, CellType::peg), Cell(0, 0, CellType::peg), Cell(0, 0, CellType::peg), Cell(0, 1, CellType::none), Cell(0, 1, CellType::none)},
+				{Cell(1, 1, CellType::none), Cell(1, 1, CellType::none), Cell(1, 0, CellType::peg), Cell(1, 0, CellType::peg), Cell(1, 0, CellType::peg), Cell(1, 1, CellType::none), Cell(1, 1, CellType::none)},
+				{Cell(0, 0, CellType::peg), Cell(0, 1, CellType::peg), Cell(0, 0, CellType::peg), Cell(0, 0, CellType::peg), Cell(0, 0, CellType::peg), Cell(0, 0, CellType::peg), Cell(0, 0, CellType::peg)},
+				{Cell(0, 0, CellType::peg), Cell(0, 1, CellType::peg), Cell(0, 0, CellType::peg), Cell(0, 0, CellType::empty), Cell(0, 0, CellType::peg), Cell(0, 0, CellType::peg), Cell(0, 0, CellType::peg)},
+				{Cell(0, 0, CellType::peg), Cell(0, 1, CellType::peg), Cell(0, 0, CellType::peg), Cell(0, 0, CellType::peg), Cell(0, 0, CellType::peg), Cell(0, 0, CellType::peg), Cell(0, 0, CellType::peg)},
+				{Cell(0, 1, CellType::none), Cell(0, 1, CellType::none), Cell(0, 0, CellType::peg), Cell(0, 0, CellType::peg), Cell(0, 0, CellType::peg), Cell(0, 1, CellType::none), Cell(0, 1, CellType::none)},
+				{Cell(0, 1, CellType::none), Cell(0, 1, CellType::none), Cell(0, 0, CellType::peg), Cell(0, 0, CellType::peg), Cell(0, 0, CellType::peg), Cell(0, 1, CellType::none), Cell(0, 1, CellType::none)}
 			};
 			break;
 			
 		case 5:
 			board = {
-				{Cell::none, Cell::none, Cell::none, Cell::none, Cell::peg, Cell::none, Cell::none, Cell::none, Cell::none},
-				{Cell::none, Cell::none, Cell::none, Cell::peg, Cell::peg, Cell::peg, Cell::none, Cell::none, Cell::none},
-				{Cell::none, Cell::none, Cell::peg, Cell::peg, Cell::peg, Cell::peg, Cell::peg, Cell::none, Cell::none},
-				{Cell::none, Cell::peg, Cell::peg, Cell::peg, Cell::peg, Cell::peg, Cell::peg, Cell::peg, Cell::none},
-				{Cell::peg, Cell::peg, Cell::peg, Cell::peg, Cell::empty, Cell::peg, Cell::peg, Cell::peg, Cell::peg},
-				{Cell::none, Cell::peg, Cell::peg, Cell::peg, Cell::peg, Cell::peg, Cell::peg, Cell::peg, Cell::none},
-				{Cell::none, Cell::none, Cell::peg, Cell::peg, Cell::peg, Cell::peg, Cell::peg, Cell::none, Cell::none},
-				{Cell::none, Cell::none, Cell::none, Cell::peg, Cell::peg, Cell::peg, Cell::none, Cell::none, Cell::none},
-				{Cell::none, Cell::none, Cell::none, Cell::none, Cell::peg, Cell::none, Cell::none, Cell::none, Cell::none},
+				{Cell(0, 1, CellType::none), Cell(0, 1, CellType::none), Cell(0, 1, CellType::none), Cell(0, 1, CellType::none), Cell(0, 0, CellType::peg), Cell(0, 1, CellType::none), Cell(0, 1, CellType::none), Cell(0, 1, CellType::none), Cell(0, 1, CellType::none)},
+				{Cell(1, 1, CellType::none), Cell(1, 1, CellType::none), Cell(1, 1, CellType::none), Cell(1, 0, CellType::peg), Cell(1, 0, CellType::peg), Cell(1, 0, CellType::peg), Cell(1, 1, CellType::none), Cell(1, 1, CellType::none), Cell(1, 1, CellType::none)},
+				{Cell(0, 1, CellType::none), Cell(0, 1, CellType::none), Cell(0, 0, CellType::peg), Cell(0, 0, CellType::peg), Cell(0, 0, CellType::peg), Cell(0, 0, CellType::peg), Cell(0, 0, CellType::peg), Cell(0, 1, CellType::none), Cell(0, 1, CellType::none)},
+				{Cell(0, 1, CellType::none), Cell(0, 1, CellType::peg), Cell(0, 0, CellType::peg), Cell(0, 0, CellType::peg), Cell(0, 0, CellType::peg), Cell(0, 0, CellType::peg), Cell(0, 0, CellType::peg), Cell(0, 0, CellType::peg), Cell(0, 1, CellType::none)},
+				{Cell(0, 0, CellType::peg), Cell(0, 1, CellType::peg), Cell(0, 0, CellType::peg), Cell(0, 0, CellType::peg), Cell(0, 0, CellType::empty), Cell(0, 0, CellType::peg), Cell(0, 0, CellType::peg), Cell(0, 0, CellType::peg), Cell(0, 0, CellType::peg)},
+				{Cell(0, 1, CellType::none), Cell(0, 1, CellType::peg), Cell(0, 0, CellType::peg), Cell(0, 0, CellType::peg), Cell(0, 0, CellType::peg), Cell(0, 0, CellType::peg), Cell(0, 0, CellType::peg), Cell(0, 0, CellType::peg), Cell(0, 1, CellType::none)},
+				{Cell(0, 1, CellType::none), Cell(0, 1, CellType::none), Cell(0, 0, CellType::peg), Cell(0, 0, CellType::peg), Cell(0, 0, CellType::peg), Cell(0, 0, CellType::peg), Cell(0, 0, CellType::peg), Cell(0, 1, CellType::none), Cell(0, 1, CellType::none)},
+				{Cell(0, 1, CellType::none), Cell(0, 1, CellType::none), Cell(0, 1, CellType::none), Cell(0, 0, CellType::peg), Cell(0, 0, CellType::peg), Cell(0, 0, CellType::peg), Cell(0, 1, CellType::none), Cell(0, 1, CellType::none), Cell(0, 1, CellType::none)},
+				{Cell(0, 1, CellType::none), Cell(0, 1, CellType::none), Cell(0, 1, CellType::none), Cell(0, 1, CellType::none), Cell(0, 0, CellType::peg), Cell(0, 1, CellType::none), Cell(0, 1, CellType::none), Cell(0, 1, CellType::none), Cell(0, 1, CellType::none)},
 			};
 			break;
 			
 		case 6:
 			board = {
-				{Cell::none, Cell::none, Cell::none, Cell::none, Cell::empty, Cell::none, Cell::none, Cell::none, Cell::none},
-				{Cell::none, Cell::none, Cell::none, Cell::peg, Cell::none, Cell::peg, Cell::none, Cell::none, Cell::none},
-				{Cell::none, Cell::none, Cell::peg, Cell::none, Cell::peg, Cell::none, Cell::peg, Cell::none, Cell::none},
-				{Cell::none, Cell::peg, Cell::none, Cell::peg, Cell::none, Cell::peg, Cell::none, Cell::peg, Cell::none},
-				{Cell::peg, Cell::none, Cell::peg, Cell::none, Cell::peg, Cell::none, Cell::peg, Cell::none, Cell::peg}
+				{Cell(0, 1, CellType::none), Cell(0, 1, CellType::none), Cell(0, 1, CellType::none), Cell(0, 1, CellType::none), Cell(0, 0, CellType::empty), Cell(0, 1, CellType::none), Cell(0, 1, CellType::none), Cell(0, 1, CellType::none), Cell(0, 1, CellType::none)},
+				{Cell(1, 1, CellType::none), Cell(1, 1, CellType::none), Cell(1, 1, CellType::none), Cell(1, 0, CellType::peg), Cell(1, 1, CellType::none), Cell(1, 0, CellType::peg), Cell(1, 1, CellType::none), Cell(1, 1, CellType::none), Cell(1, 1, CellType::none)},
+				{Cell(0, 1, CellType::none), Cell(0, 1, CellType::none), Cell(0, 0, CellType::peg), Cell(0, 1, CellType::none), Cell(0, 0, CellType::peg), Cell(0, 1, CellType::none), Cell(0, 0, CellType::peg), Cell(0, 1, CellType::none), Cell(0, 1, CellType::none)},
+				{Cell(0, 1, CellType::none), Cell(0, 1, CellType::peg), Cell(0, 1, CellType::none), Cell(0, 0, CellType::peg), Cell(0, 1, CellType::none), Cell(0, 0, CellType::peg), Cell(0, 1, CellType::none), Cell(0, 0, CellType::peg), Cell(0, 1, CellType::none)},
+				{Cell(0, 0, CellType::peg), Cell(0, 1, CellType::none), Cell(0, 0, CellType::peg), Cell(0, 1, CellType::none), Cell(0, 0, CellType::peg), Cell(0, 1, CellType::none), Cell(0, 0, CellType::peg), Cell(0, 1, CellType::none), Cell(0, 0, CellType::peg)}
 			};
 			break;
 
@@ -108,7 +177,7 @@ vector<vector<Cell>>	createBoard(int boardSelection)
  * 
  * @param board > two dimensional vector
  */
-void	printBoard(vector<vector<Cell>> board)
+void	PegSolitaire::printBoard()
 {
 	int	i, j;
 	for (i = -1; i < (int)board.size(); i++)
@@ -127,11 +196,11 @@ void	printBoard(vector<vector<Cell>> board)
 					DEFAULT_COLOUR;
 			else
 			{
-				if (board[i][j] == Cell::none)
+				if (board[i][j].getCellType() == CellType::none)
 					cout << " ";
-				else if (board[i][j] == Cell::empty)
+				else if (board[i][j].getCellType() == CellType::empty)
 					cout << ".";
-				else if (board[i][j] == Cell::peg)
+				else if (board[i][j].getCellType() == CellType::peg)
 					cout << "P";
 			}
 			cout << " ";
@@ -148,71 +217,71 @@ void	printBoard(vector<vector<Cell>> board)
  * @param column 
  * @param direction 
  */
-void	makeMove(vector<vector<Cell>> &board, int row, int column, string direction, bool isSixthBoard)
+void	PegSolitaire::makeMove(int row, int column, string direction)
 {
 	if (direction == "U")
 	{
-		board[row][column] = Cell::empty;
-		board[row - 1][column] = Cell::empty;
-		board[row - 2][column] = Cell::peg;
+		board[row][column].setCellType(CellType::empty);
+		board[row - 1][column].setCellType(CellType::empty);
+		board[row - 2][column].setCellType(CellType::peg);
 	}
 	else if (direction == "D")
 	{
-		board[row][column] = Cell::empty;
-		board[row + 1][column] = Cell::empty;
-		board[row + 2][column] = Cell::peg;
+		board[row][column].setCellType(CellType::empty);
+		board[row + 1][column].setCellType(CellType::empty);
+		board[row + 2][column].setCellType(CellType::peg);
 	}
 	else if (direction == "L")
 	{
-		board[row][column] = Cell::empty;
-		if (isSixthBoard)
+		board[row][column].setCellType(CellType::empty);
+		if (isTypeSix)
 		{
-			board[row][column - 2] = Cell::empty;
-			board[row][column - 4] = Cell::peg;
+			board[row][column - 2].setCellType(CellType::empty);
+			board[row][column - 4].setCellType(CellType::peg);
 		}
 		else
 		{
-			board[row][column - 1] = Cell::empty;
-			board[row][column - 2] = Cell::peg;
+			board[row][column - 1].setCellType(CellType::empty);
+			board[row][column - 2].setCellType(CellType::peg);
 		}
 	}
 	else if (direction == "R")
 	{
-		board[row][column] = Cell::empty;
-		if (isSixthBoard)
+		board[row][column].setCellType(CellType::empty);
+		if (isTypeSix)
 		{
-			board[row][column + 2] = Cell::empty;
-			board[row][column + 4] = Cell::peg;
+			board[row][column + 2].setCellType(CellType::empty);
+			board[row][column + 4].setCellType(CellType::peg);
 		}
 		else
 		{
-			board[row][column + 1] = Cell::empty;
-			board[row][column + 2] = Cell::peg;
+			board[row][column + 1].setCellType(CellType::empty);
+			board[row][column + 2].setCellType(CellType::peg);
 		}
 	}
 	else if (direction == "UL")
 	{
-		board[row][column] = Cell::empty;
-		board[row - 1][column - 1] = Cell::empty;
-		board[row - 2][column - 2] = Cell::peg;
+		board[row][column].setCellType(CellType::empty);
+		board[row - 1][column - 1].setCellType(CellType::empty);
+		board[row - 2][column - 2].setCellType(CellType::peg);
 	}
 	else if (direction == "UR")
 	{
-		board[row][column] = Cell::empty;
-		board[row - 1][column + 1] = Cell::empty;
-		board[row - 2][column + 2] = Cell::peg;
+		board[row][column].setCellType(CellType::empty);
+		board[row - 1][column + 1].setCellType(CellType::empty);
+		board[row - 2][column + 2].setCellType(CellType::peg);
 	}
 	else if (direction == "DL")
 	{
-		board[row][column] = Cell::empty;
-		board[row + 1][column - 1] = Cell::empty;
-		board[row + 2][column - 2] = Cell::peg;
+		board[row][column].setCellType(CellType::empty);
+		board[row + 1][column - 1].setCellType(CellType::empty);
+		board[row + 2][column - 2].setCellType(CellType::peg);
 	}
 	else if (direction == "DR")
 	{
-		board[row][column] = Cell::empty;
-		board[row + 1][column + 1] = Cell::empty;
-		board[row + 2][column + 2] = Cell::empty;
+		board[row][column].setCellType(CellType::empty);
+		board[row + 1][column + 1].setCellType(CellType::empty);
+		board[row + 2][column + 2].setCellType(CellType::empty);
 	}
 }
 
@@ -237,7 +306,7 @@ void	stringToUppercase(string &str)
  * @return true 
  * @return false 
  */
-bool	isValidMove(vector<vector<Cell>> board, int row, int column, string direction, bool isSixthBoard)
+bool	PegSolitaire::isValidMove(int row, int column, string direction)
 {
 	bool	isValid = true;
 	vector<string>	directions = {"U", "D", "L", "R",
@@ -250,64 +319,64 @@ bool	isValidMove(vector<vector<Cell>> board, int row, int column, string directi
 		isValid = false;
 
 	/* Do given coordinates correspond a peg */
-	else if (board[row][column] != Cell::peg)
+	else if (board[row][column].getCellType() != CellType::peg)
 		isValid = false;
 
 	/* is Move Valid */
 	else if (direction == "U")
 	{
-		if (isSixthBoard)
+		if (isTypeSix)
 			isValid = false;
 		else if (row <= 1)
 			isValid = false;
-		else if (board[row - 1][column] != Cell::peg || board[row - 2][column] != Cell::empty)
+		else if (board[row - 1][column].getCellType() != CellType::peg || board[row - 2][column].getCellType() != CellType::empty)
 			isValid = false;
 	}
 	else if (direction == "D")
 	{
-		if (isSixthBoard)
+		if (isTypeSix)
 			isValid = false;
 		else if (row >= board.size() - 2)
 			isValid = false;
-		else if (board[row + 1][column] != Cell::peg || board[row + 2][column] != Cell::empty)
+		else if (board[row + 1][column].getCellType() != CellType::peg || board[row + 2][column].getCellType() != CellType::empty)
 			isValid = false;
 	}
 	else if (direction == "L")
 	{
-		if (isSixthBoard)
+		if (isTypeSix)
 		{
 			if (column <= 3)
 				isValid = false;
-			else if (board[row][column - 2] != Cell::peg || board[row][column - 4] != Cell::empty)
+			else if (board[row][column - 2].getCellType() != CellType::peg || board[row][column - 4].getCellType() != CellType::empty)
 				isValid = false;
 		}
 		else if (column <= 1)
 			isValid = false;
-		else if (board[row][column - 1] != Cell::peg || board[row][column - 2] != Cell::empty)
+		else if (board[row][column - 1].getCellType() != CellType::peg || board[row][column - 2].getCellType() != CellType::empty)
 			isValid = false;
 	}
 	else if (direction == "R")
 	{
-		if (isSixthBoard)
+		if (isTypeSix)
 		{
 			if (column >= board[row].size() - 4)
 				isValid = false;
-			else if (board[row][column + 2] != Cell::peg || board[row][column + 4] != Cell::empty)
+			else if (board[row][column + 2].getCellType() != CellType::peg || board[row][column + 4].getCellType() != CellType::empty)
 				isValid = false;
 		}
 		else if (column >= board[row].size() - 2)
 			isValid = false;
-		else if (board[row][column + 1] != Cell::peg || board[row][column + 2] != Cell::empty)
+		else if (board[row][column + 1].getCellType() != CellType::peg || board[row][column + 2].getCellType() != CellType::empty)
 			isValid = false;
 	}
 	/* for sixth board */
 	else if (direction == "UL")
 	{
-		if (isSixthBoard)
+		if (isTypeSix)
 		{
 			if (row <= 1 || column <= 1)
 				isValid = false;
-			else if (board[row - 1][column - 1] != Cell::peg || board[row - 2][column - 2] != Cell::empty)
+			else if (board[row - 1][column - 1].getCellType() != CellType::peg || board[row - 2][column - 2].getCellType() != CellType::empty)
 				isValid = false;
 		}
 		else
@@ -315,11 +384,11 @@ bool	isValidMove(vector<vector<Cell>> board, int row, int column, string directi
 	}
 	else if (direction == "UR")
 	{
-		if (isSixthBoard)
+		if (isTypeSix)
 		{
 			if (row <= 1 || column >= board[row].size() - 2)
 				isValid = false;
-			else if (board[row - 1][column + 1] != Cell::peg || board[row - 2][column + 2] != Cell::empty)
+			else if (board[row - 1][column + 1].getCellType() != CellType::peg || board[row - 2][column + 2].getCellType() != CellType::empty)
 				isValid = false;
 		}
 		else
@@ -327,11 +396,11 @@ bool	isValidMove(vector<vector<Cell>> board, int row, int column, string directi
 	}
 	else if (direction == "DL")
 	{
-		if (isSixthBoard)
+		if (isTypeSix)
 		{
 			if (row >= board.size() - 2 || column <= 1)
 				isValid = false;
-			else if (board[row + 1][column - 1] != Cell::peg || board[row + 2][column - 2] != Cell::empty)
+			else if (board[row + 1][column - 1].getCellType() != CellType::peg || board[row + 2][column - 2].getCellType() != CellType::empty)
 				isValid = false;
 		}
 		else
@@ -339,11 +408,11 @@ bool	isValidMove(vector<vector<Cell>> board, int row, int column, string directi
 	}
 	else if (direction == "DR")
 	{
-		if (isSixthBoard)
+		if (isTypeSix)
 		{
 			if (row >= board.size() - 2 || column >= board[row].size() - 2)
 				isValid = false;
-			else if (board[row + 1][column + 1] != Cell::peg || board[row + 2][column + 2] != Cell::empty)
+			else if (board[row + 1][column + 1].getCellType() != CellType::peg || board[row + 2][column + 2].getCellType() != CellType::empty)
 				isValid = false;
 		}
 		else
@@ -363,32 +432,32 @@ bool	isValidMove(vector<vector<Cell>> board, int row, int column, string directi
  * @return true 
  * @return false 
  */
-bool	isGameFinished(vector<vector<Cell>> board, int boardSelection)
+bool	PegSolitaire::isGameFinished()
 {
 	int i, j;
 	bool areMovesOver = true;
 
 	for (i = 0; i < board.size() && areMovesOver; i++)
 		for (j = 0; j < board[i].size() && areMovesOver; j++)
-			if (board[i][j] == Cell::peg)
+			if (board[i][j].getCellType() == CellType::peg)
 			{
-				if (isValidMove(board, i, j, "U", boardSelection == 6))
+				if (isValidMove(i, j, "U"))
 					areMovesOver = false;
-				else if (isValidMove(board, i, j, "D", boardSelection == 6))
+				else if (isValidMove(i, j, "D"))
 					areMovesOver = false;
-				else if (isValidMove(board, i, j, "L", boardSelection == 6))
+				else if (isValidMove(i, j, "L"))
 					areMovesOver = false;
-				else if (isValidMove(board, i, j, "R", boardSelection == 6))
+				else if (isValidMove(i, j, "R"))
 					areMovesOver = false;
-				else if (boardSelection == 6)
+				else if (boardType == 6)
 				{
-					if (isValidMove(board, i, j, "UL", boardSelection == 6))
+					if (isValidMove(i, j, "UL"))
 						areMovesOver = false;
-					else if (isValidMove(board, i, j, "DL", boardSelection == 6))
+					else if (isValidMove(i, j, "DL"))
 						areMovesOver = false;
-					else if (isValidMove(board, i, j, "UR", boardSelection == 6))
+					else if (isValidMove(i, j, "UR"))
 						areMovesOver = false;
-					else if (isValidMove(board, i, j, "DR", boardSelection == 6))
+					else if (isValidMove(i, j, "DR"))
 						areMovesOver = false;
 				}
 			}
@@ -399,17 +468,35 @@ bool	isGameFinished(vector<vector<Cell>> board, int boardSelection)
 /**
  * @brief return the count of pegs on the board
  * 
- * @param board 
  * @return int 
  */
-int	gameScore(vector<vector<Cell>> board)
+int	PegSolitaire::gameScore()
 {
 	int	score = 0;
 
 	for (auto singleRow : board)
 	{
 		for (Cell cell : singleRow)
-			if (cell == Cell::peg)
+			if (cell.getCellType() == CellType::peg)
+				score++;
+	}
+
+	return (score);
+}
+
+/**
+ * @brief return the count of empty cells on the board
+ * 
+ * @return int 
+ */
+int	PegSolitaire::emptyCellsCounter()
+{
+	int	score = 0;
+
+	for (auto singleRow : board)
+	{
+		for (Cell cell : singleRow)
+			if (cell.getCellType() == CellType::empty)
 				score++;
 	}
 
@@ -418,12 +505,12 @@ int	gameScore(vector<vector<Cell>> board)
 
 /**
  * @brief Game part that plays with a human
- * 
+ * - there is a problem here -
  * @param board 
  * @param boardSelection 
  * @return int 
  */
-void	humanPlayerGame(vector<vector<Cell>> board, int boardSelection)
+void	PegSolitaire::humanPlayerGame()
 {
 	/* user inputs */
 	int	in_row;
@@ -460,7 +547,7 @@ void	humanPlayerGame(vector<vector<Cell>> board, int boardSelection)
 	do
 	{
 		direction = "";
-		printBoard(board);
+		printBoard();
 		cout << endl << "SAVE FILE.TXT command to save current game status to FILE.TXT file" << endl <<
 			"LOAD FILE.TXT command to load the game board from FILE.TXT file" << endl <<
 			"Give me a right move: ";
@@ -479,11 +566,11 @@ void	humanPlayerGame(vector<vector<Cell>> board, int boardSelection)
 			{
 				board.clear();
 				cin >> fileName;
-				if (!loadFile(board, fileName))
+				if (!loadFile(fileName))
 					return;
 				/* if boardSelection is 6, it can be a problem */
-				if (boardSelection == 6)
-					boardSelection = 0;
+				if (isTypeSix == 6)
+					isTypeSix = 0;
 				
 				/* to clear the input buffer */
 				continue;
@@ -491,7 +578,7 @@ void	humanPlayerGame(vector<vector<Cell>> board, int boardSelection)
 			else if (fileSelection.substr(0.4) == "SAVE")
 			{
 				cin >> fileName;
-				saveFile(board, fileName, true, moveCounter, boardSelection == 6);
+				saveFile(fileName, true, moveCounter);
 				continue;
 			}
 		}
@@ -501,17 +588,21 @@ void	humanPlayerGame(vector<vector<Cell>> board, int boardSelection)
 
 		cout << endl;
 
-		if (isValidMove(board, row, column, direction, boardSelection == 6))
+		if (isValidMove(row, column, direction))
 		{
-			makeMove(board, row, column, direction, boardSelection == 6);
+			makeMove(row, column, direction);
 			moveCounter++;
+			totalPegs--;
+			numOfPegs--;
+			numOfEmptyCells++;
+			numOfTakenPegs++;
 		}
 		else
 			cerr << "That was not a valid move" << endl;
-	} while (!isGameFinished(board, boardSelection));
+	} while (!isGameFinished());
 
-	printBoard(board);
-	cout << "Game Finished! Your Score is " << gameScore(board) << endl;
+	printBoard();
+	cout << "Game Finished! Your Score is " << numOfPegs << endl;
 }
 
 /**
@@ -523,13 +614,12 @@ void	humanPlayerGame(vector<vector<Cell>> board, int boardSelection)
  * @param direction 
  * @param isSixthBoard 
  */
-void	getRandomValidMove(vector<vector<Cell>> board, int &row, int &column, string &direction, bool isSixthBoard)
+void	PegSolitaire::getRandomValidMove(int &row, int &column, string &direction)
 {
 	do {
 		row = rand() % board.size();
 		column = rand() % board[row].size();
-
-		if (!isSixthBoard)
+		if (!isTypeSix)
 		{
 			switch (rand() % 4)
 			{
@@ -594,7 +684,7 @@ void	getRandomValidMove(vector<vector<Cell>> board, int &row, int &column, strin
 			}
 
 		}
-	} while (!isValidMove(board, row, column, direction, isSixthBoard));
+	} while (!isValidMove(row, column, direction));
 
 	cout << "row, column, direction => " << row << " " << column << " " << direction << endl;
 }
@@ -605,7 +695,7 @@ void	getRandomValidMove(vector<vector<Cell>> board, int &row, int &column, strin
  * @param board 
  * @param boardSelection 
  */
-void	computerGame(vector<vector<Cell>> board, int boardSelection)
+void	PegSolitaire::computerGame()
 {
 	cout << "---- Computer Game ----\n" << endl;
 
@@ -617,7 +707,7 @@ void	computerGame(vector<vector<Cell>> board, int boardSelection)
 	string	fileName;
 
 	do {
-		printBoard(board);
+		printBoard();
 
 		cout << endl << "SAVE FILE.TXT command to save current game status to FILE.TXT" << endl <<
 			"LOAD FILE.TXT command to load the game board from FILE.TXT" << endl <<
@@ -630,11 +720,11 @@ void	computerGame(vector<vector<Cell>> board, int boardSelection)
 		{
 			board.clear();
 			cin >> fileName;
-			if (!loadFile(board, fileName))
+			if (!loadFile(fileName))
 				return;
 			/* if boardSelection is 6, it can be a problem */
-			if (boardSelection == 6)
-				boardSelection = 0;
+			if (isTypeSix == 6)
+				isTypeSix = 0;
 			
 			/* to clear the input buffer */
 			continue;
@@ -642,18 +732,22 @@ void	computerGame(vector<vector<Cell>> board, int boardSelection)
 		else if (fileSelection.substr(0,4) == "SAVE")
 		{
 			cin >> fileName;
-			saveFile(board, fileName, true, moveCounter, boardSelection == 6);
+			saveFile(fileName, true, moveCounter);
 			continue;
 		}
-
-		getRandomValidMove(board, row, column, direction, boardSelection == 6);
-		makeMove(board, row, column, direction, boardSelection == 6);
+		cout << "aloo" << endl;
+		getRandomValidMove(row, column, direction);
+		makeMove(row, column, direction);
 		moveCounter++;
+		totalPegs--;
+		numOfPegs--;
+		numOfEmptyCells++;
+		numOfTakenPegs++;
 		cout << "\n" << endl;
-	} while (!isGameFinished(board, boardSelection));
+	} while (!isGameFinished());
 
-	printBoard(board);
-	cout << "Game Finished! Score is " << gameScore(board) << endl;
+	printBoard();
+	cout << "Game Finished! Score is " << numOfPegs << endl;
 }
 
 /**
@@ -664,7 +758,7 @@ void	computerGame(vector<vector<Cell>> board, int boardSelection)
  * @return true -> file load successfully
  * @return false -> file wasn't able to load
  */
-bool	loadFile(vector<vector<Cell>> &board, const string fileName)
+bool	PegSolitaire::loadFile(const string fileName)
 {
 	fstream	fileToLoad;
 	vector<Cell>	singleRow;
@@ -688,13 +782,13 @@ bool	loadFile(vector<vector<Cell>> &board, const string fileName)
 		for (char buff : line) {
 			cout << buff;
 			if (buff == ' ')
-				singleRow.push_back(Cell::none);
+				singleRow.push_back(Cell(0, 0, CellType::none));
 
 			else if (buff == '.')
-				singleRow.push_back(Cell::empty);
+				singleRow.push_back(Cell(0, 0, CellType::empty));
 
 			else if (buff == 'P')
-				singleRow.push_back(Cell::peg);
+				singleRow.push_back(Cell(0, 0,CellType::peg));
 			columnCounter++;
 		}
 		if (maxColumn < columnCounter)
@@ -707,14 +801,14 @@ bool	loadFile(vector<vector<Cell>> &board, const string fileName)
 
 	/* to avoid possible bugs */
 	for (int i = 0; i < board.size(); i++)
-		board[i].resize(maxColumn, Cell::none);
+		board[i].resize(maxColumn, Cell(0, 0, CellType::none));
 
 	fileToLoad.close();
 
 	return (true);
 }
 
-void	saveFile(vector<vector<Cell>> board, const string fileName, const bool isHuman, const int moveCounter, const bool isSixthBoard)
+void	PegSolitaire::saveFile(const string fileName, const bool isHuman, const int moveCounter)
 {
 	fstream	fileToSave;
 
@@ -738,7 +832,7 @@ void	saveFile(vector<vector<Cell>> board, const string fileName, const bool isHu
 
 	fileToSave << "IS THE BOARD THE SIXTH BOARD" << endl;
 	
-	if (isSixthBoard)
+	if (isTypeSix)
 		fileToSave << "-> True" << endl;
 	else
 		fileToSave << "-> False" << endl;
@@ -748,7 +842,49 @@ void	saveFile(vector<vector<Cell>> board, const string fileName, const bool isHu
 	for (vector<Cell> row : board)
 	{
 		for (Cell cell : row)
-			fileToSave << (int)cell << " ";
+			fileToSave << (int)(cell.getCellType()) << " ";
 		fileToSave << endl;
 	}
 }
+
+void	PegSolitaire::play()
+{
+	do
+	{
+		cout << "Select the game type: " << endl <<
+			"Human Player Game (0)" << endl <<
+			"Computer Game (1)" << endl <<
+			"Your choice: ";
+		cin >> gameSelection;
+
+		if (gameSelection == 1 || gameSelection == 0)
+			switch (gameSelection)
+			{
+				case 0:
+					humanPlayerGame();
+					break;
+				
+				case 1:
+					srand(time(NULL));
+					computerGame();
+				default:
+					break;
+			}
+		else
+			cerr << "That wasn't a valid game type!" << endl;
+	} while (gameSelection != 1 && gameSelection != 0);
+}
+
+void	PegSolitaire::play(Cell cellPosition)
+{
+	/**
+	 * @brief :) I am not a schlemiel guy
+	 * 
+	 */
+}
+
+void	PegSolitaire::playGame()
+{
+	
+}
+/* PegSolitaire Class ended */

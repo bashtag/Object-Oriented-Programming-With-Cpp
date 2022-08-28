@@ -6,10 +6,12 @@
 
 using namespace std;
 
+int	PegSolitaire::totalPegs = 0;
+
 int	main(void)
 {
-	vector<vector<Cell>> board;
-	int	boardSelection, gameSelection;
+	PegSolitaire pegSolitaire;
+	int	boardSelection;
 
 	do
 	{
@@ -18,36 +20,13 @@ int	main(void)
 		
 		if (1 <= boardSelection && boardSelection <= 6)
 		{
-			board = createBoard(boardSelection);	
+			pegSolitaire = PegSolitaire(boardSelection);
 		}
 		else
 			cout << "Please try again..." << endl;
 	} while (1 > boardSelection || boardSelection > 6);
 
-	do
-	{
-		cout << "Select the game type: " << endl <<
-			"Human Player Game (0)" << endl <<
-			"Computer Game (1)" << endl <<
-			"Your choice: ";
-		cin >> gameSelection;
-
-		if (gameSelection == 1 || gameSelection == 0)
-			switch (gameSelection)
-			{
-				case 0:
-					humanPlayerGame(board, boardSelection);
-					break;
-				
-				case 1:
-					srand(time(NULL));
-					computerGame(board, boardSelection);
-				default:
-					break;
-			}
-		else
-			cerr << "That wasn't a valid game type!" << endl;
-	} while (gameSelection != 1 && gameSelection != 0);
+	pegSolitaire.play();
 
 	return (0);
 }

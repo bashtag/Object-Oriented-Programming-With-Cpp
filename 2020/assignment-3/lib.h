@@ -39,32 +39,34 @@ public:
 	PegSolitaire(int, int);
 	PegSolitaire(string); /* loads from file */
 
-	vector<vector<Cell>>	createBoard(int); /* creating board according to board selection 1-6 */
-	void	printBoard(vector<vector<Cell>> board); /* printing board */
+	vector<vector<Cell>>	createBoard(); /* creating board according to board selection 1-6 */
+	void	printBoard(); /* printing board */
 	/**
 	 * @brief board, row, column, direction
 	 * 
 	 */
-	void	makeMove(vector<vector<Cell>> &, int, int, string, bool); /* making a valid move to the board */
+	void	makeMove(int, int, string); /* making a valid move to the board */
 	/**
 	 * @brief board, row, column, direction
 	 * 
 	 */
-	bool	isValidMove(vector<vector<Cell>>, int, int, string, bool); /* checks if move is valid */
-	bool	isGameFinished(vector<vector<Cell>>, int); /* checks is there any valid move on the board */
-	int	gameScore(vector<vector<Cell>>); /* return the game score of the table */
+	bool	isValidMove(int, int, string); /* checks if move is valid */
+	bool	isGameFinished(); /* checks is there any valid move on the board */
+	int	gameScore(); /* return the game score of the table */
+	int	emptyCellsCounter(); /* return the number of emtyp cells */
+	
 	/**
 	 * @brief board, row, column, direction
 	 * 
 	 */
-	void	getRandomValidMove(vector<vector<Cell>>, int&, int&, string&, bool); /* creating a valid move for computer player */
+	void	getRandomValidMove(int&, int&, string&); /* creating a valid move for computer player */
 
-	void	humanPlayerGame(vector<vector<Cell>>, int); /* initializing a human game */
-	void	computerGame(vector<vector<Cell>>, int); /* initializing a computer game */
+	void	humanPlayerGame(); /* initializing a human game */
+	void	computerGame(); /* initializing a computer game */
 
 	/* file functions */
-	bool	loadFile(vector<vector<Cell>>&, const string); /* loading file from txt file */
-	void	saveFile(vector<vector<Cell>>, const string, const bool, const int, const bool); /* saving the status of the game to the txt file */
+	bool	loadFile(const string); /* loading file from txt file */
+	void	saveFile(const string, const bool, const int); /* saving the status of the game to the txt file */
 
 	/* Getter and Setters for state of the board */
 	void	setNumOfPegs(int);
@@ -78,16 +80,10 @@ public:
 
 	/* const cannot using with static member function */
 	inline static int	getTotalPegs() {return (totalPegs);};
-	/**
-	 * @brief Set the Total Pegs object
-	 * 
-	 * @param change int variable that holds change in pegs
-	 */
-	void	setTotalPegs(int);
 
 	/* game functions */
 	void	play(); /* plays automatically for a single step */
-	void	play(Cell); /* takes a cell position and it plays the user for a single step*/
+	void	play(Cell); /* takes a cell position and it plays from the user for a single step*/
 	/**
 	 * @brief plays the game by asking the user the board type first then automatically plays the game until it ends
 	 */
@@ -99,23 +95,26 @@ private:
 	int	boardType;
 	bool	isTypeSix;
 	int	numOfPegs, numOfEmptyCells, numOfTakenPegs;
+	int	gameSelection;
 	/* When static keyword is used, variable or data members or functions can not be modified again.
 	 * It is allocated for the lifetime of program.
 	 * Static functions can be called directly by using class name.
 	 */
+	/* num of total pegs remain in boards (maybe played more than one game) */
 	static int	totalPegs;
 	vector <vector<Cell>> board;
 
 };
 
+void	stringToUppercase(string &str);
+
+#endif /* _LIB_H_ */
 
 // vector<vector<PegSolitaire::Cell>>	createBoard(int boardSelection);
 
 // void	printBoard(vector<vector<PegSolitaire::Cell>> board);
 
 // void	makeMove(vector<vector<PegSolitaire::Cell>> &board, int row, int column, string direction, bool isSixthBoard);
-
-void	stringToUppercase(string &str);
 
 // bool	isValidMove(vector<vector<PegSolitaire::Cell>> board, int row, int column, string direction, bool isSixthBoard);
 
@@ -132,5 +131,3 @@ void	stringToUppercase(string &str);
 // bool	loadFile(vector<vector<PegSolitaire::Cell>> &board, const string fileName);
 
 // void	saveFile(vector<vector<PegSolitaire::Cell>> board, const string fileName, const bool isHuman, const int moveCounter, const bool isSixthBoard);
-
-#endif /* _LIB_H_ */
