@@ -21,6 +21,7 @@ namespace doys
 				DayOfYear(); /* empty, this constructor won't initialize variables */
 				DayOfYear(int day, int month);
 				DayOfYear(const DayOfYear& object); /* copy constructor */
+				~DayOfYear();
 
 				/* getters and setters */
 				inline int	getDay() const {return (day);};
@@ -36,15 +37,20 @@ namespace doys
 				DayOfYear&	operator=(const DayOfYear&);
 				friend ostream&	operator<<(ostream& output, const DayOfYear&);
 
+				/* static functions to keep the number of DayOfYear objects */
+				inline static int	getTotalDayOfYearObjects() {return (totalObjects);};
+				static void	setTotalObjects(int change);
+
 			private:
 				int	numOfDay;
 				int	day;
 				int	month;
+				static int	totalObjects;
 		};
 		/* DayOfYear class is end*/
 
 		
-		DayOfYearSet(DayOfYear *doyArr);
+		DayOfYearSet(DayOfYear *doyArr, int);
 		DayOfYearSet(vector <DayOfYear> doyVector);
 		DayOfYearSet();
 		~DayOfYearSet();
@@ -65,17 +71,12 @@ namespace doys
 		friend const DayOfYearSet	operator^(const DayOfYearSet&, const DayOfYearSet&);
 		friend const DayOfYearSet	operator!(const DayOfYearSet&);
 		DayOfYear	operator[](int);
-
-		/* static functions to keep the number of DayOfYear objects */
-		inline static int	getTotalDayOfYearObjects() {return (totalObjects);};
-		static void	setTotalObjects(int change);
 		
 		static void	saveFile(fstream& file, DayOfYearSet&);
 
 	private:
 		DayOfYear	*doyArr;
 		int size;
-		static int	totalObjects;
 	};
 }
 
