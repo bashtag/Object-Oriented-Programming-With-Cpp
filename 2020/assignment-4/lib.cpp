@@ -5,16 +5,30 @@ using namespace std;
 namespace doys
 {
 	/* DayOfYear class implementations*/
+
+	/* set the day January 1 */
 	DayOfYearSet::DayOfYear::DayOfYear()
-	{}
+	{
+		this->day = 1;
+		this->month = 1;
+		this->setNumOfDay();
+		this->setTotalObjects(1);
+	}
 	DayOfYearSet::DayOfYear::DayOfYear(int _day, int _month) : day(_day), month(_month)
 	{
-		setNumOfDay();
+		this->setNumOfDay();
+		this->setTotalObjects(1);
 	}
 	DayOfYearSet::DayOfYear::DayOfYear(const DayOfYear& obj)
 	{
 		*this = obj;
-		setNumOfDay();
+		this->setNumOfDay();
+		this->setTotalObjects(1);
+	}
+	DayOfYearSet::DayOfYear::~DayOfYear()
+	{
+		delete this;
+		this->setTotalObjects(-1);
 	}
 
 	void	DayOfYearSet::DayOfYear::setDay(int day)
@@ -75,12 +89,69 @@ namespace doys
 		return (output);
 	}
 
-
+	void	DayOfYearSet::DayOfYear::setTotalObjects(int change)
+	{
+		totalObjects += change;
+	}
 	/* DayOfYearSet class implementations*/
 
+	DayOfYearSet::DayOfYearSet(DayOfYear *doyArr, int size)
+	{
+		this->size = size;
+		this->doyArr = new DayOfYear[this->size];
+
+		for (int i = 0; i < this->size; i++)
+			this->doyArr[i] = doyArr[i];
+
+	}
+	DayOfYearSet::DayOfYearSet(vector <DayOfYear> doyVector)
+	{
+		this->size = doyVector.size();
+		this->doyArr = new DayOfYear[this->size];
+
+		for(int i = 0; i < this->size; i++)
+			this->doyArr[i] = doyVector[i];
+
+	}
+	DayOfYearSet::DayOfYearSet()
+	{
+		this->size = 0;
+		this->doyArr = new DayOfYear[this->size];
+
+	}
+	DayOfYearSet::~DayOfYearSet()
+	{
+		delete[] this->doyArr;
+	}
+	DayOfYearSet::DayOfYearSet(const DayOfYearSet& object)
+	{
+
+	}
 
 
+	bool	DayOfYearSet::add(DayOfYear& dayOfYear)
+	{
 
+	}
 
+	bool	DayOfYearSet::remove(DayOfYear& dayOfYear)
+	{
+
+	}
+
+	int	DayOfYearSet::getSize() const
+	{
+
+	}
+
+	DayOfYearSet::DayOfYear*	DayOfYearSet::getArray() const
+	{
+
+	}
+
+	void	DayOfYearSet::setSize(int change)
+	{
+
+	}
 
 }
