@@ -63,9 +63,10 @@ namespace doys
 
 
 		/* const is necessary. Because operator mustn't change the second object's parameters */
-		friend	ostream&	operator<<(ostream& output, const DayOfYearSet&);
-		friend	bool	operator==(const DayOfYearSet&, const DayOfYearSet&);
-		friend	bool	operator!=(const DayOfYearSet&, const DayOfYearSet&);
+		DayOfYearSet&	operator=(const DayOfYearSet&);
+		friend ostream&	operator<<(ostream& output, const DayOfYearSet&);
+		friend bool	operator==(const DayOfYearSet&, const DayOfYearSet&);
+		friend bool	operator!=(const DayOfYearSet&, const DayOfYearSet&);
 		friend const DayOfYearSet	operator+(const DayOfYearSet&, const DayOfYearSet&);
 		friend const DayOfYearSet	operator-(const DayOfYearSet&, const DayOfYearSet&);
 		friend const DayOfYearSet	operator^(const DayOfYearSet&, const DayOfYearSet&);
