@@ -182,12 +182,72 @@ namespace doys
 
 	DayOfYearSet&	DayOfYearSet::operator=(const DayOfYearSet& dayOfYearSet)
 	{
-		
+		*this = dayOfYearSet;
+
+		return (*this);
 	}
 
 	ostream&	operator<<(ostream& output, const DayOfYearSet& dayOfYearSet)
 	{
+		output << "There are " << dayOfYearSet.getSize() << " days." << endl;
 
+		for (int i = 0; i < dayOfYearSet.getSize(); i++)
+		{
+			output << dayOfYearSet.getSize() <<  ". element of array:\n\tDay-> " << dayOfYearSet.getArray()[i].getDay() << "\tMonth-> " << dayOfYearSet.getArray()[i].getMonth() << '\n' << endl;
+		}
+
+		return (output);
 	}
 
+	bool	operator==(const DayOfYearSet& dayOfYearSet, const DayOfYearSet& compDayOfYearSet)
+	{
+		bool	isEqual = true;
+
+		if (dayOfYearSet.getSize() != compDayOfYearSet.getSize())
+			isEqual = false;
+
+		for (int i  = 0; isEqual && i < dayOfYearSet.getSize(); i++)
+			if (dayOfYearSet.getArray()[i].getDay() != compDayOfYearSet.getArray()[i].getDay() ||
+			dayOfYearSet.getArray()[i].getMonth() != compDayOfYearSet.getArray()[i].getMonth())
+				isEqual = false;
+
+		return (isEqual);
+	}
+
+	bool	operator!=(const DayOfYearSet& dayOfYearSet, const DayOfYearSet& compDayOfYearSet)
+	{
+		return (!(dayOfYearSet == compDayOfYearSet));
+	}
+
+	const DayOfYearSet	operator+(const DayOfYearSet& firstDayOfYearSet, const DayOfYearSet& secondDayOfYearSet)
+	{
+		DayOfYearSet::DayOfYear	*doyArr;
+		int	intersectionSize = 0, j, totalSize;
+
+		totalSize = firstDayOfYearSet.getSize() + secondDayOfYearSet.getSize();
+
+		for (int i = 0; i < firstDayOfYearSet.getSize(); i++)
+		{
+			for (j = 0; j < secondDayOfYearSet.getSize(); j++)
+			{
+				if (firstDayOfYearSet.getArray()[i] == secondDayOfYearSet.getArray()[j])
+				{
+					intersectionSize++;
+				}
+			}
+		}
+
+		doyArr = new DayOfYearSet::DayOfYear[totalSize - intersectionSize];
+		
+		for (int i = 0; i < firstDayOfYearSet.getSize(); i++)
+		{
+			for (j = 0; j < secondDayOfYearSet.getSize(); j++)
+			{
+				if (firstDayOfYearSet.getArray()[i] == secondDayOfYearSet.getArray()[j])
+				{
+					intersectionSize++;
+				}
+			}
+		}
+	}
 }
