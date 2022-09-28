@@ -180,6 +180,12 @@ namespace doys
 
 	/* Operator overloading part */
 
+	/**
+	 * @brief I used this basic assign method. Memory location didn't changed.
+	 * 
+	 * @param dayOfYearSet 
+	 * @return DayOfYearSet& 
+	 */
 	DayOfYearSet&	DayOfYearSet::operator=(const DayOfYearSet& dayOfYearSet)
 	{
 		*this = dayOfYearSet;
@@ -219,35 +225,129 @@ namespace doys
 		return (!(dayOfYearSet == compDayOfYearSet));
 	}
 
+	/**
+	 * @brief I used a constructor which has a vector parameter in this operator overload function.
+	 * I used basic intersection method.
+	 * @param firstDayOfYearSet 
+	 * @param secondDayOfYearSet 
+	 * @return const DayOfYearSet 
+	 */
 	const DayOfYearSet	operator+(const DayOfYearSet& firstDayOfYearSet, const DayOfYearSet& secondDayOfYearSet)
 	{
-		DayOfYearSet::DayOfYear	*doyArr;
-		int	intersectionSize = 0, j, totalSize;
+		vector<DayOfYearSet::DayOfYear>	vecArr;
+		int	j, i;
+		bool	isThere = false;
 
-		totalSize = firstDayOfYearSet.getSize() + secondDayOfYearSet.getSize();
+		for (i = 0; i < firstDayOfYearSet.getSize(); i++)
+			vecArr.push_back(firstDayOfYearSet.getArray()[i]);
+
+		for (i = 0; i < secondDayOfYearSet.getSize(); i++)
+		{
+			for (j = 0; !isThere && j < firstDayOfYearSet.getSize(); j++)
+			{
+				if (secondDayOfYearSet.getArray()[i] == firstDayOfYearSet.getArray()[j])
+					isThere = true;
+			}
+
+			if (!isThere)
+				vecArr.push_back(secondDayOfYearSet.getArray()[i]);
+		}
+
+		return (DayOfYearSet(vecArr));
+	}
+
+	const DayOfYearSet	operator-(const DayOfYearSet& firstDayOfYearSet, const DayOfYearSet& secondDayOfYearSet)
+	{
+		vector<DayOfYearSet::DayOfYear>	vecArr;
+		int	j;
+		bool	isThere = false;
+
+		for (int i = 0; i < firstDayOfYearSet.getSize(); i++)
+		{
+			for (j = 0; !isThere && j < secondDayOfYearSet.getSize(); j++)
+			{
+				if (firstDayOfYearSet.getArray()[i] == secondDayOfYearSet.getArray()[j])
+					isThere = true;
+			}
+
+			if (!isThere)
+				vecArr.push_back(firstDayOfYearSet.getArray()[i]);
+		}
+
+		return (DayOfYearSet(vecArr));	
+	}
+
+	/**
+	 * @brief intersection of two sets
+	 * 
+	 * @param firstDayOfYearSet 
+	 * @param secondDayOfYearSet 
+	 * @return const DayOfYearSet 
+	 */
+	const DayOfYearSet	operator^(const DayOfYearSet& firstDayOfYearSet, const DayOfYearSet& secondDayOfYearSet)
+	{
+		vector<DayOfYearSet::DayOfYear>	vecArr;
+		int	j;
 
 		for (int i = 0; i < firstDayOfYearSet.getSize(); i++)
 		{
 			for (j = 0; j < secondDayOfYearSet.getSize(); j++)
 			{
 				if (firstDayOfYearSet.getArray()[i] == secondDayOfYearSet.getArray()[j])
-				{
-					intersectionSize++;
-				}
+					vecArr.push_back(firstDayOfYearSet.getArray()[i]);
 			}
 		}
 
-		doyArr = new DayOfYearSet::DayOfYear[totalSize - intersectionSize];
+		return (DayOfYearSet(vecArr));
+	}
+
+	/**
+	 * @brief complement calculation
+	 * 
+	 * @param dayOfYearSet 
+	 * @return const DayOfYearSet 
+	 */
+	const DayOfYearSet	operator!(const DayOfYearSet& dayOfYearSet)
+	{
+		vector<DayOfYearSet::DayOfYear>	vecArr;
+		DayOfYearSet::DayOfYear	dayOfYear;
+		int	day, month, i;
+		bool	isThere = false;
+
+		for (month = 1, day = 1; month <= 12;)
+		{
+			dayOfYear.setDay(day);
+			dayOfYear.setMonth(month);
+
+			for (i = 0; i < dayOfYearSet.getSize(); i++)
+			{
+				if (dayOfYear == dayOfYearSet.getArray()[i])
+					isThere = true;
+			}
+
+			if (!isThere)
+				vecArr.push_back(dayOfYear);
+		}
+
+		return (vecArr);
+	}
+
+	DayOfYearSet::DayOfYear	DayOfYearSet::operator[](int index)
+	{
+		return (this->getArray()[index]);
+	}
+
+	/**
+	 * @brief save file function
+	 * 
+	 * @param file 
+	 * @param dayOfYearSet 
+	 */
+	void	DayOfYearSet::saveFile(fstream &file, DayOfYearSet& dayOfYearSet)
+	{
+		for (int i = 0; i < dayOfYearSet.getSize(); i++)
+			file << "index: " << i << " (Day: " << dayOfYearSet[i].getDay() << " Month: " << dayOfYearSet[i].getMonth() << ")" << endl;
 		
-		for (int i = 0; i < firstDayOfYearSet.getSize(); i++)
-		{
-			for (j = 0; j < secondDayOfYearSet.getSize(); j++)
-			{
-				if (firstDayOfYearSet.getArray()[i] == secondDayOfYearSet.getArray()[j])
-				{
-					intersectionSize++;
-				}
-			}
-		}
+		file << '\n' << endl;
 	}
 }
