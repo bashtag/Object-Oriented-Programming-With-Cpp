@@ -4,7 +4,7 @@ using namespace std;
 
 namespace doys
 {
-	/* DayOfYear class implementations*/
+	/*----------------------- DayOfYear class implementations -----------------------*/
 
 	/* set the day January 1 */
 	DayOfYearSet::DayOfYear::DayOfYear()
@@ -33,10 +33,18 @@ namespace doys
 
 	void	DayOfYearSet::DayOfYear::setDay(int day)
 	{
+		if (day < 1 || day > 31 || (this->month == 2 && day > 28) ||
+			(this->month < 8 && this->month % 2 == 0 && day > 30) ||
+			(this->month >= 8 && this->month % 2 == 1 && day > 30))
+			throw	invalid_argument("Invalid Day");
 		this->day = day;
 	}
 	void	DayOfYearSet::DayOfYear::setMonth(int month)
 	{
+		if (month > 12 || month < 1 ||
+			(this->day > 28 && month == 2) ||
+			(this->day > 30 && ((month < 8 || month % 2 == 0) || (month >= 8 || month % 2 == 1))))
+			throw	invalid_argument("Invalid Month");
 		this->month = month;
 	}
 	void	DayOfYearSet::DayOfYear::setNumOfDay()
@@ -93,7 +101,7 @@ namespace doys
 	{
 		totalObjects += change;
 	}
-	/* DayOfYearSet class implementations*/
+	/*----------------------- DayOfYearSet class implementations -----------------------*/
 
 	DayOfYearSet::DayOfYearSet(DayOfYear *doyArr, int size)
 	{
@@ -125,31 +133,59 @@ namespace doys
 	}
 	DayOfYearSet::DayOfYearSet(const DayOfYearSet& object)
 	{
-
+		*this = object;
 	}
-
 
 	bool	DayOfYearSet::add(DayOfYear& dayOfYear)
 	{
+		DayOfYear	*temp = new DayOfYear[this->size + 1];
 
+		if (temp)
+		{
+			for (int i = 0; i < this->size; i++)
+				temp[i] = this->doyArr[i];
+			
+			temp[this->size] = dayOfYear;
+
+			this->doyArr = temp;
+			this->setSize(1);
+
+			delete[] temp;
+
+			return (true);
+		}
+		return (false);
 	}
 
 	bool	DayOfYearSet::remove(DayOfYear& dayOfYear)
 	{
-
+		this->size--;
 	}
 
 	int	DayOfYearSet::getSize() const
 	{
-
+		return (this->size);
 	}
 
 	DayOfYearSet::DayOfYear*	DayOfYearSet::getArray() const
 	{
-
+		return (this->doyArr);
 	}
 
 	void	DayOfYearSet::setSize(int change)
+	{
+		this->size += change;
+	}
+
+
+	/* Operator overloading part */
+
+	DayOfYearSet&	DayOfYearSet::operator=(const DayOfYearSet& dayOfYearSet)
+	{
+		
+	}
+
+	ostream&	operator<<(ostream& output, const DayOfYearSet& dayOfYearSet)
 	{
 
 	}
