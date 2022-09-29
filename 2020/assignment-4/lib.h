@@ -18,7 +18,7 @@ namespace doys
 		class DayOfYear
 		{
 			public:
-				DayOfYear(); /* empty, this constructor won't initialize variables */
+				DayOfYear(); /* set the time to january 1 */
 				DayOfYear(int day, int month);
 				DayOfYear(const DayOfYear& object); /* copy constructor */
 				~DayOfYear();

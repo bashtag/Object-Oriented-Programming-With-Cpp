@@ -99,7 +99,7 @@ namespace doys
 
 	void	DayOfYearSet::DayOfYear::setTotalObjects(int change)
 	{
-		totalObjects += change;
+		DayOfYearSet::DayOfYear::totalObjects += change;
 	}
 	/*----------------------- DayOfYearSet class implementations -----------------------*/
 
@@ -138,7 +138,15 @@ namespace doys
 
 	bool	DayOfYearSet::add(DayOfYear& dayOfYear)
 	{
-		DayOfYear	*temp = new DayOfYear[this->size + 1];
+		DayOfYear	*temp;
+		bool	isThere = false;
+
+		for (int i = 0; i < this->getSize(); i++)
+			if (dayOfYear == this->getArray()[i])
+				isThere = true;
+
+		if (!isThere)
+			temp = new DayOfYear[this->size + 1];
 
 		if (temp)
 		{
@@ -160,6 +168,8 @@ namespace doys
 	bool	DayOfYearSet::remove(DayOfYear& dayOfYear)
 	{
 		this->size--;
+
+		return (true);
 	}
 
 	int	DayOfYearSet::getSize() const
