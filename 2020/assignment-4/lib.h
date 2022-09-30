@@ -31,6 +31,8 @@ namespace doys
 				void	setMonth(int);
 				void	setNumOfDay();
 
+				void	checkValidity();
+
 				/* operator overloading functions */
 				bool	operator==(const DayOfYear&);
 				bool	operator!=(const DayOfYear&);
@@ -40,7 +42,7 @@ namespace doys
 				/* static functions to keep the number of DayOfYear objects */
 				inline static int	getTotalDayOfYearObjects() {return (totalObjects);};
 				static void	setTotalObjects(int change);
-
+				//inline void set_total_objects(int change){	totalObjects+=change;};
 			private:
 				int	numOfDay;
 				int	day;
@@ -49,7 +51,6 @@ namespace doys
 		};
 		/* DayOfYear class is end*/
 
-		
 		DayOfYearSet(DayOfYear *doyArr, int);
 		DayOfYearSet(vector <DayOfYear> doyVector);
 		DayOfYearSet();

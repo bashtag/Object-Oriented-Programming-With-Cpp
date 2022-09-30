@@ -11,11 +11,13 @@ namespace doys
 	{
 		this->day = 1;
 		this->month = 1;
+		this->checkValidity();
 		this->setNumOfDay();
 		this->setTotalObjects(1);
 	}
 	DayOfYearSet::DayOfYear::DayOfYear(int _day, int _month) : day(_day), month(_month)
 	{
+		this->checkValidity();
 		this->setNumOfDay();
 		this->setTotalObjects(1);
 	}
@@ -27,41 +29,52 @@ namespace doys
 	}
 	DayOfYearSet::DayOfYear::~DayOfYear()
 	{
-		delete this;
+		/* You cannot do this. Because this object still alive. */
+		// delete this;
 		this->setTotalObjects(-1);
 	}
 
 	void	DayOfYearSet::DayOfYear::setDay(int day)
 	{
-		if (day < 1 || day > 31 || (this->month == 2 && day > 28) ||
-			(this->month < 8 && this->month % 2 == 0 && day > 30) ||
-			(this->month >= 8 && this->month % 2 == 1 && day > 30))
-			throw	invalid_argument("Invalid Day");
 		this->day = day;
+		this->setNumOfDay();
 	}
 	void	DayOfYearSet::DayOfYear::setMonth(int month)
 	{
-		if (month > 12 || month < 1 ||
-			(this->day > 28 && month == 2) ||
-			(this->day > 30 && ((month < 8 || month % 2 == 0) || (month >= 8 || month % 2 == 1))))
-			throw	invalid_argument("Invalid Month");
+		// if (month > 12 || month < 1 ||
+		// 	(this->day > 28 && month == 2) ||
+		// 	(this->day > 30 && ((month < 8 || month % 2 == 0) || (month >= 8 || month % 2 == 1))))
+		// 	throw	invalid_argument("Invalid Month");
 		this->month = month;
+		cout << "debugg: " << this->month << endl;
+		this->setNumOfDay();
 	}
 	void	DayOfYearSet::DayOfYear::setNumOfDay()
 	{
-		this->numOfDay = month*30;
+		this->numOfDay = (month - 1)*30;
 
 		if (month < 8)
-		{	
-			this->numOfDay += (month + 1) / 2;
-			if (month > 1)
+		{
+			this->numOfDay += (month) / 2;
+			if (month > 2)
 				this->numOfDay -= 2;
 		}
 		else
 		{
-			this->numOfDay += (month + 2) / 2;
+			this->numOfDay += (month + 1) / 2;
 			this->numOfDay -= 2;
 		}
+
+		this->numOfDay += this->day;
+	}
+
+	void	DayOfYearSet::DayOfYear::checkValidity()
+	{
+		if (this->day < 1 || this->day > 31 || (this->month == 2 && this->day > 28) ||
+			(this->month < 8 && this->month % 2 == 0 && this->day > 30) ||
+			(this->month >= 8 && this->month % 2 == 1 && this->day > 30))
+			throw	invalid_argument("Invalid Day");
+
 	}
 
 	bool	DayOfYearSet::DayOfYear::operator==(const DayOfYear& obj)
@@ -98,8 +111,8 @@ namespace doys
 	}
 
 	void	DayOfYearSet::DayOfYear::setTotalObjects(int change)
-	{
-		DayOfYearSet::DayOfYear::totalObjects += change;
+	{	
+		DayOfYearSet::DayOfYear::totalObjects+=change;
 	}
 	/*----------------------- DayOfYearSet class implementations -----------------------*/
 
@@ -209,7 +222,7 @@ namespace doys
 
 		for (int i = 0; i < dayOfYearSet.getSize(); i++)
 		{
-			output << dayOfYearSet.getSize() <<  ". element of array:\n\tDay-> " << dayOfYearSet.getArray()[i].getDay() << "\tMonth-> " << dayOfYearSet.getArray()[i].getMonth() << '\n' << endl;
+			output << i + 1 <<  ". element of array:\n\tDay-> " << dayOfYearSet.getArray()[i].getDay() << "\tMonth-> " << dayOfYearSet.getArray()[i].getMonth() << '\n' << endl;
 		}
 
 		return (output);
