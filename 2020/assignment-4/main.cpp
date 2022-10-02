@@ -17,6 +17,7 @@ int	main(void)
 	firstDoyVec = {DayOfYearSet::DayOfYear(28, 2),
 		DayOfYearSet::DayOfYear(31, 3),
 		DayOfYearSet::DayOfYear(12, 1),
+		DayOfYearSet::DayOfYear(20, 5),
 		DayOfYearSet::DayOfYear(30, 6),
 		DayOfYearSet::DayOfYear(31, 8),
 		DayOfYearSet::DayOfYear(23, 12),
@@ -91,8 +92,59 @@ int	main(void)
 
 	copyingDayOfYearSet = new DayOfYearSet(*firstDayOfYearSet);
 
-	// cout << *firstDayOfYearSet << '\n' << *copyingDayOfYearSet << endl;
+	cout << *firstDayOfYearSet << '\n' << *copyingDayOfYearSet << endl;
 
+	if (*firstDayOfYearSet == *copyingDayOfYearSet)
+		cout << "Copying constructor is working right\n" << endl;
+	cout << "--------------------------------------------------------------\n"
+		<< "Remove function:\n" << endl;
+
+	DayOfYearSet::DayOfYear	firstDoy(20, 5), secondDoy(1, 12);
+
+	cout << *secondDayOfYearSet << endl;
+	secondDayOfYearSet->remove(firstDoy);
+	cout << *secondDayOfYearSet << endl;
+
+	cout << "--------------------------------------------------------------\n"
+		<< "Add function:\n" << endl;
+
+	cout << *firstDayOfYearSet << endl;
+	firstDayOfYearSet->add(secondDoy);
+	cout << *firstDayOfYearSet << endl;
+
+	cout << "--------------------------------------------------------------\n"
+		<< "Addition (union set) operator overloading:\n" << endl;
+
+	DayOfYearSet	additionSet = *firstDayOfYearSet + *secondDayOfYearSet;
+
+	cout << additionSet << endl;
+
+	cout << "--------------------------------------------------------------\n"
+		<< "Extraction (difference set) operator overloading:\n" << endl;
+
+	DayOfYearSet	differenceSet = *firstDayOfYearSet - *secondDayOfYearSet;
+
+	cout << differenceSet << endl;
+
+	cout << "--------------------------------------------------------------\n"
+		<< "Intersection of two sets:\n" << endl;
+
+	DayOfYearSet	intersectSet = *firstDayOfYearSet ^ *secondDayOfYearSet;
+
+	cout << intersectSet << endl;
+
+	cout << "--------------------------------------------------------------\n"
+		<< "Complemention of two sets:\n" << endl;
+
+	DayOfYearSet	complementSet = !additionSet;
+
+	// cout << complementSet << endl;
+
+	cout << "--------------------------------------------------------------\n"
+		<< "DeMorgan Rule:\n" << endl;
+
+	if (complementSet == (!(*firstDayOfYearSet) ^ !(*secondDayOfYearSet)))
+		cout << "DeMorgan said right." << endl;
 
 
 	return (0);
