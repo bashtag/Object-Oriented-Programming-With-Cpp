@@ -18,9 +18,10 @@ namespace doys
 		class DayOfYear
 		{
 			public:
-				DayOfYear(); /* empty, this constructor won't initialize variables */
+				DayOfYear(); /* set the time to january 1 */
 				DayOfYear(int day, int month);
 				DayOfYear(const DayOfYear& object); /* copy constructor */
+				~DayOfYear();
 
 				/* getters and setters */
 				inline int	getDay() const {return (day);};
@@ -30,21 +31,27 @@ namespace doys
 				void	setMonth(int);
 				void	setNumOfDay();
 
+				void	checkValidity();
+
 				/* operator overloading functions */
 				bool	operator==(const DayOfYear&);
 				bool	operator!=(const DayOfYear&);
 				DayOfYear&	operator=(const DayOfYear&);
 				friend ostream&	operator<<(ostream& output, const DayOfYear&);
 
+				/* static functions to keep the number of DayOfYear objects */
+				inline static int	getTotalDayOfYearObjects() {return (totalObjects);};
+				static void	setTotalObjects(int change);
+				//inline void set_total_objects(int change){	totalObjects+=change;};
 			private:
 				int	numOfDay;
 				int	day;
 				int	month;
+				static int	totalObjects;
 		};
 		/* DayOfYear class is end*/
 
-		
-		DayOfYearSet(DayOfYear *doyArr);
+		DayOfYearSet(DayOfYear *doyArr, int);
 		DayOfYearSet(vector <DayOfYear> doyVector);
 		DayOfYearSet();
 		~DayOfYearSet();
@@ -53,29 +60,26 @@ namespace doys
 		bool	remove(DayOfYear& dayOfYear);
 		int	getSize() const;
 		DayOfYear*	getArray() const;
-		void	setSize(int change);
+		void	setSize(int size);
+		void	clear();
 
 
 		/* const is necessary. Because operator mustn't change the second object's parameters */
-		friend	ostream&	operator<<(ostream& output, const DayOfYearSet&);
-		friend	bool	operator==(const DayOfYearSet&, const DayOfYearSet&);
-		friend	bool	operator!=(const DayOfYearSet&, const DayOfYearSet&);
+		DayOfYearSet&	operator=(const DayOfYearSet&);
+		friend ostream&	operator<<(ostream& output, const DayOfYearSet&);
+		friend bool	operator==(const DayOfYearSet&, const DayOfYearSet&);
+		friend bool	operator!=(const DayOfYearSet&, const DayOfYearSet&);
 		friend const DayOfYearSet	operator+(const DayOfYearSet&, const DayOfYearSet&);
 		friend const DayOfYearSet	operator-(const DayOfYearSet&, const DayOfYearSet&);
 		friend const DayOfYearSet	operator^(const DayOfYearSet&, const DayOfYearSet&);
 		friend const DayOfYearSet	operator!(const DayOfYearSet&);
 		DayOfYear	operator[](int);
-
-		/* static functions to keep the number of DayOfYear objects */
-		inline static int	getTotalDayOfYearObjects() {return (totalObjects);};
-		static void	setTotalObjects(int change);
 		
 		static void	saveFile(fstream& file, DayOfYearSet&);
 
 	private:
 		DayOfYear	*doyArr;
 		int size;
-		static int	totalObjects;
 	};
 }
 
