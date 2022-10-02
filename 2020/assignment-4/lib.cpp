@@ -146,15 +146,31 @@ namespace doys
 	}
 	DayOfYearSet::DayOfYearSet(const DayOfYearSet& object)
 	{
-		*this = object;
+		delete[] this->doyArr;
+		
+		this->doyArr = new DayOfYear[object.getSize()];
+
+		for (int i = 0; i < object.getSize(); i++)
+			this->doyArr[i] = object.getArray()[i];
+
+		this->setSize(object.getSize());
 	}
 
+	/**
+	 * @brief to add a day of year object in the set.
+	 * I have used a reallocation algorithm.
+	 * 
+	 * @param dayOfYear 
+	 * @return true 
+	 * @return false 
+	 */
 	bool	DayOfYearSet::add(DayOfYear& dayOfYear)
 	{
-		DayOfYear	*temp;
+		DayOfYear	*temp = NULL;
 		bool	isThere = false;
+		int	i;
 
-		for (int i = 0; i < this->getSize(); i++)
+		for (i = 0; i < this->getSize(); i++)
 			if (dayOfYear == this->getArray()[i])
 				isThere = true;
 
@@ -163,26 +179,53 @@ namespace doys
 
 		if (temp)
 		{
-			for (int i = 0; i < this->size; i++)
+			for (i = 0; i < this->size; i++)
 				temp[i] = this->doyArr[i];
 			
 			temp[this->size] = dayOfYear;
 
+			delete[] this->doyArr;
 			this->doyArr = temp;
-			this->setSize(1);
+			this->setSize(this->size + 1);
 
-			delete[] temp;
+			DayOfYearSet::DayOfYear::setTotalObjects(1);
 
 			return (true);
 		}
+		
+
 		return (false);
 	}
 
+	/**
+	 * @brief to remove a day of year object from the set.
+	 * My algorithm is finding element and sliding all remaining elements left.
+	 * 
+	 * @param dayOfYear 
+	 * @return true 
+	 * @return false 
+	 */
 	bool	DayOfYearSet::remove(DayOfYear& dayOfYear)
 	{
-		this->size--;
+		bool	isThere = false;
+		int	i;
 
-		return (true);
+		for (i = 0; !isThere && i < this->getSize(); i++)
+			if (this->getArray()[i] == dayOfYear)
+				isThere = true;
+
+		i--;
+
+		if (isThere)
+		{
+			for (; i + 1 < this->getSize(); i++)
+				this->doyArr[i] = this->doyArr[i + 1];
+			DayOfYearSet::DayOfYear::setTotalObjects(-1);
+		}
+
+		this->setSize(this->size - 1);
+
+		return (isThere);
 	}
 
 	int	DayOfYearSet::getSize() const
@@ -195,9 +238,9 @@ namespace doys
 		return (this->doyArr);
 	}
 
-	void	DayOfYearSet::setSize(int change)
+	void	DayOfYearSet::setSize(int size)
 	{
-		this->size += change;
+		this->size = size;
 	}
 
 	void	DayOfYearSet::clear()
@@ -271,6 +314,7 @@ namespace doys
 
 		for (i = 0; i < secondDayOfYearSet.getSize(); i++)
 		{
+			isThere = false;
 			for (j = 0; !isThere && j < firstDayOfYearSet.getSize(); j++)
 			{
 				if (secondDayOfYearSet.getArray()[i] == firstDayOfYearSet.getArray()[j])
@@ -280,7 +324,7 @@ namespace doys
 			if (!isThere)
 				vecArr.push_back(secondDayOfYearSet.getArray()[i]);
 		}
-
+		
 		return (DayOfYearSet(vecArr));
 	}
 
@@ -292,6 +336,7 @@ namespace doys
 
 		for (int i = 0; i < firstDayOfYearSet.getSize(); i++)
 		{
+			isThere = false;
 			for (j = 0; !isThere && j < secondDayOfYearSet.getSize(); j++)
 			{
 				if (firstDayOfYearSet.getArray()[i] == secondDayOfYearSet.getArray()[j])
@@ -344,6 +389,7 @@ namespace doys
 
 		for (month = 1, day = 1; month <= 12;)
 		{
+			isThere = false;
 			dayOfYear.setDay(day);
 			dayOfYear.setMonth(month);
 
@@ -355,9 +401,19 @@ namespace doys
 
 			if (!isThere)
 				vecArr.push_back(dayOfYear);
+
+			if ((month == 2 && day == 28) ||
+				(month < 8 && month % 2 == 0 && day == 30) ||
+				(month >= 8 && month % 2 == 1 && day == 30) ||
+				day == 31)
+			{
+				month++;
+				day = 0;
+			}
+			day++;
 		}
 
-		return (vecArr);
+		return (DayOfYearSet(vecArr));
 	}
 
 	DayOfYearSet::DayOfYear	DayOfYearSet::operator[](int index)
