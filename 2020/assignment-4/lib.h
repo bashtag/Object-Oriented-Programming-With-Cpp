@@ -61,6 +61,7 @@ namespace doys
 		int	getSize() const;
 		DayOfYear*	getArray() const;
 		void	setSize(int change);
+		void	clear();
 
 
 		/* const is necessary. Because operator mustn't change the second object's parameters */
