@@ -9,21 +9,27 @@ int	DayOfYearSet::DayOfYear::totalObjects = 0;
 
 int	main(void)
 {
-	DayOfYearSet	*firstDayOfYearSet, *secondDayOfYearSet;
+	DayOfYearSet	*firstDayOfYearSet, *secondDayOfYearSet, *copyingDayOfYearSet;
 	vector<DayOfYearSet::DayOfYear>	firstDoyVec, secondDoyVec;
 	fstream	file;
 	int	i;
 
-	firstDoyVec.push_back(DayOfYearSet::DayOfYear(28, 2));
-	firstDoyVec.push_back(DayOfYearSet::DayOfYear(31, 3));
-	firstDoyVec.push_back(DayOfYearSet::DayOfYear(12, 1));
-	firstDoyVec.push_back(DayOfYearSet::DayOfYear(30, 6));
-	firstDoyVec.push_back(DayOfYearSet::DayOfYear(31, 8));
-	firstDoyVec.push_back(DayOfYearSet::DayOfYear(23, 12));
-	firstDoyVec.push_back(DayOfYearSet::DayOfYear(3, 4));
-	firstDoyVec.push_back(DayOfYearSet::DayOfYear(9, 11));
-	firstDoyVec.push_back(DayOfYearSet::DayOfYear(21, 10));
-	firstDoyVec.push_back(DayOfYearSet::DayOfYear(5, 10));
+	firstDoyVec = {DayOfYearSet::DayOfYear(28, 2),
+		DayOfYearSet::DayOfYear(31, 3),
+		DayOfYearSet::DayOfYear(12, 1),
+		DayOfYearSet::DayOfYear(30, 6),
+		DayOfYearSet::DayOfYear(31, 8),
+		DayOfYearSet::DayOfYear(23, 12),
+		DayOfYearSet::DayOfYear(3, 4),
+		DayOfYearSet::DayOfYear(9, 11),
+		DayOfYearSet::DayOfYear(21, 10),
+		DayOfYearSet::DayOfYear(5, 10)};
+
+	/* I have experienced contructor stuffs while I was making debugging.
+	The Vector class uses the copying constructor for realloc operation.
+	Also destructor is used.
+	I have realized that while I was checking static variables.
+	*/
 
 	secondDoyVec.push_back(DayOfYearSet::DayOfYear(1, 1));
 	secondDoyVec.push_back(DayOfYearSet::DayOfYear(28, 2));
@@ -51,16 +57,42 @@ int	main(void)
 	cout << "--------------------------------------------------------------\n" << endl;
 	cout << "--------------- Second Day Of Year Set Object ----------------" << endl;
 	for (i = 0; i < secondDayOfYearSet->getSize(); i++)
-		cout << "Day: " << (*secondDayOfYearSet)[i].getDay() << ", Month: "
-			<< (*secondDayOfYearSet)[i].getMonth() << ", Num of day: " << (*secondDayOfYearSet)[i].getNumOfDay()
-			<< ", total objects: " << (*secondDayOfYearSet)[i].getTotalDayOfYearObjects() << endl;
+		cout << "Day: " << secondDayOfYearSet->getArray()[i].getDay() << ", Month: "
+			<< secondDayOfYearSet->getArray()[i].getMonth() << ", Num of day: " << secondDayOfYearSet->getArray()[i].getNumOfDay()
+			<< ", total objects: " << secondDayOfYearSet->getArray()[i].getTotalDayOfYearObjects() << endl;
 	cout << "--------------------------------------------------------------\n" << endl;
-	(*firstDayOfYearSet)[2].setDay(31);
-	(*firstDayOfYearSet)[2].setMonth(10);
+	firstDayOfYearSet->getArray()[2].setDay(31);
+	firstDayOfYearSet->getArray()[2].setMonth(10);
 
 
 	cout << "Stream overloading function: \n" << endl;
 	cout << "\tFirst Day Of Year Set Object\n\n" << *firstDayOfYearSet << endl;
+
+	cout << "--------------------------------------------------------------\n"
+		<< "\nInner class stream and comparison overloading functions: \n" << endl;
+
+	if (firstDayOfYearSet->getArray()[5] == secondDayOfYearSet->getArray()[9])
+		cout << "two objects are equal: \n" << firstDayOfYearSet->getArray()[5] << '\n'
+			<< secondDayOfYearSet->getArray()[9] << endl;
+
+	if (firstDayOfYearSet->getArray()[8] != secondDayOfYearSet->getArray()[8])
+		cout << "two objects are not equal: \n" << firstDayOfYearSet->getArray()[8] << '\n'
+			<< secondDayOfYearSet->getArray()[8] << endl;
+
+	/* to free vector */
+	firstDoyVec.clear();
+	secondDoyVec.clear();
+	cout << "There are " << DayOfYearSet::DayOfYear::getTotalDayOfYearObjects() << " objects now.\n" << endl;
+
+	cout << "--------------------------------------------------------------\n" 
+		<< "\nDayOfYearSet class functions\n" << endl;
+
+	cout << "Copying Constructor:\n" << endl;
+
+	copyingDayOfYearSet = new DayOfYearSet(*firstDayOfYearSet);
+
+	// cout << *firstDayOfYearSet << '\n' << *copyingDayOfYearSet << endl;
+
 
 
 	return (0);
