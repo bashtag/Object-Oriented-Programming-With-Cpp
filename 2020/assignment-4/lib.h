@@ -60,7 +60,7 @@ namespace doys
 		bool	remove(DayOfYear& dayOfYear);
 		int	getSize() const;
 		DayOfYear*	getArray() const;
-		void	setSize(int change);
+		void	setSize(int size);
 		void	clear();
 
 
