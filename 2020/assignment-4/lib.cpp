@@ -41,12 +41,8 @@ namespace doys
 	}
 	void	DayOfYearSet::DayOfYear::setMonth(int month)
 	{
-		// if (month > 12 || month < 1 ||
-		// 	(this->day > 28 && month == 2) ||
-		// 	(this->day > 30 && ((month < 8 || month % 2 == 0) || (month >= 8 || month % 2 == 1))))
-		// 	throw	invalid_argument("Invalid Month");
 		this->month = month;
-		cout << "debugg: " << this->month << endl;
+		// cout << "debugg: " << this->month << endl;
 		this->setNumOfDay();
 	}
 	void	DayOfYearSet::DayOfYear::setNumOfDay()
@@ -68,12 +64,16 @@ namespace doys
 		this->numOfDay += this->day;
 	}
 
+	/**
+	 * @brief checking function to check if the day is valid or not
+	 * 
+	 */
 	void	DayOfYearSet::DayOfYear::checkValidity()
 	{
 		if (this->day < 1 || this->day > 31 || (this->month == 2 && this->day > 28) ||
 			(this->month < 8 && this->month % 2 == 0 && this->day > 30) ||
 			(this->month >= 8 && this->month % 2 == 1 && this->day > 30))
-			throw	invalid_argument("Invalid Day");
+			throw	invalid_argument("Invalid Day or Month");
 
 	}
 
@@ -198,6 +198,11 @@ namespace doys
 	void	DayOfYearSet::setSize(int change)
 	{
 		this->size += change;
+	}
+
+	void	DayOfYearSet::clear()
+	{
+		this->~DayOfYearSet();
 	}
 
 
