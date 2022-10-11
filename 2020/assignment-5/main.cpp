@@ -10,7 +10,7 @@ int	main(void)
 	BoardGame2D*	eightPuzzle = new EightPuzzle;
 
 	eightPuzzle->initialize();
-	eightPuzzle->playAutoAll();
+	eightPuzzle->playUser();
 
 	return (0);
 }
