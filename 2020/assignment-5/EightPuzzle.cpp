@@ -1,6 +1,7 @@
 #include "EightPuzzle.h"
 #include <algorithm>
 #include <iostream>
+#include <thread>
 
 using namespace std;
 
@@ -45,9 +46,9 @@ namespace	bg2d
 		 * 
 		 */
 
-		row = static_cast<int>(move[0]) - 1;
+		row = static_cast<int>(move[0] - '0') - 1;
 		column = static_cast<int>(toupper(move[1])) - static_cast<int>('A');
-		direction = move.substr(3);
+		direction = toupper(move[3]);
 
 		if (isValidMove(row, column, direction))
 			makeMove(row, column, direction);
@@ -99,7 +100,7 @@ namespace	bg2d
 			default:
 				break;
 			}
-		} while (!this->isValidMove(row, column, direction));
+		} while (!(this->isValidMove(row, column, direction)));
 	}
 
 	/**
@@ -117,17 +118,17 @@ namespace	bg2d
 
 		if (!(row <= 2 && row >= 0) || !(column <= 2 && column >= 0))
 			isValid = false;
-		else if (direction == "L" || column <= 0 ||
-				board[row][column - 1] != -1)
+		else if (direction == "L" && (column <= 0 ||
+				board[row][column - 1] != -1))
 			isValid = false;
-		else if (direction == "R" || column >= 2 ||
-				board[row][column + 1] != -1)
+		else if (direction == "R" && (column >= 2 ||
+				board[row][column + 1] != -1))
 			isValid = false;
-		else if (direction == "U" || row <= 0 ||
-				board[row - 1][column] != -1)
+		else if (direction == "U" && (row <= 0 ||
+				board[row - 1][column] != -1))
 			isValid = false;
-		else if (direction == "D" || row >= 2 ||
-				board[row + 1][column] != -1)
+		else if (direction == "D" && (row >= 2 ||
+				board[row + 1][column] != -1))
 			isValid = false;
 
 		return (isValid);
@@ -144,8 +145,6 @@ namespace	bg2d
 	{
 		int	temp;
 
-		cout << "move: " << row << ", " << column << ", " << direction << endl;
-
 		if (direction == "U")
 		{
 			temp = this->board[row][column];
@@ -155,19 +154,19 @@ namespace	bg2d
 		else if (direction == "D")
 		{
 			temp = this->board[row][column];
-			this->board[row + 1][column] == temp;
+			this->board[row + 1][column] = temp;
 			this->board[row][column] = -1;			
 		}
 		else if (direction == "L")
 		{
 			temp = this->board[row][column];
-			this->board[row][column - 1] == temp;
+			this->board[row][column - 1] = temp;
 			this->board[row][column] = -1;			
 		}
 		else if (direction == "R")
 		{
 			temp = this->board[row][column];
-			this->board[row][column + 1] == temp;
+			this->board[row][column + 1] = temp;
 			this->board[row][column] = -1;			
 		}
 	}
@@ -247,6 +246,6 @@ namespace	bg2d
 	 */
 	void	EightPuzzle::gameInfo() const
 	{
-		cout << "Row(1, 2, 3) - Column(A, B, C) - '-' -  Direction(U, D, L, R)" << endl;
+		cout << "Current board score is " << boardScore() << " Row(1, 2, 3) - Column(A, B, C) - '-' -  Direction(U, D, L, R)" << endl;
 	}
 }
