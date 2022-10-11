@@ -24,15 +24,17 @@ namespace bg2d
 	{
 		string	nextMove;
 
-		this->gameInfo();
-		while (!this->endGame())
+		while (!this->endGame() && (nextMove != "M" && nextMove != "m"))
 		{
+			cout << endl;
+			this->gameInfo();
 			this->print();
-			cout << "Give me a valid move: " << endl;
+			cout << "Give me a valid move or if you go back to the main menu, enter 'M': " << endl;
 			cin >> nextMove;
 			cin.clear();
 
-			this->playUser(nextMove);
+			if (nextMove != "M" && nextMove != "m")
+				this->playUser(nextMove);
 		}
 	}
 
