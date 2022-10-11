@@ -4,6 +4,9 @@
 #include <string>
 #include <vector>
 
+#define COLOUR_BLUE "\033[0;34m"
+#define DEFAULT_COLOUR "\033[0m"
+
 using namespace std;
 
 /**
@@ -15,7 +18,6 @@ namespace bg2d
 	class BoardGame2D
 	{
 	private:
-		int	bScore;
 	public:
 		BoardGame2D();
 
@@ -50,8 +52,7 @@ namespace bg2d
 		 * starting from the top left corner of the terminal.
 		 * 
 		 */
-		virtual void	print() = 0;
-		friend ostream&	operator<<(ostream& output, const BoardGame2D&);
+		virtual void	print() const = 0;
 
 		/**
 		 * @brief it returns true if the game is ended
@@ -72,6 +73,14 @@ namespace bg2d
 		 * 
 		 */
 		static 	void	playVector(vector<BoardGame2D*>);
+
+		/**
+		 * @brief Print the related game infos such as how can do a valid move
+		 * 
+		 */
+		virtual void	gameInfo() const = 0;
+
+		friend ostream&	operator<<(ostream&, const BoardGame2D&);
 	};
 }
 
