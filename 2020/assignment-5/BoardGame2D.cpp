@@ -13,29 +13,27 @@ namespace bg2d
 	{
 		while (!this->endGame())
 		{
-			this->playAuto();
 			this->print();
+			this->playAuto();
+			this_thread::sleep_for(chrono::milliseconds(700));
 		}
-		this_thread::sleep_for(chrono::milliseconds(700));
+		this->print();
 	}
 
 	void	BoardGame2D::playUser()
 	{
 		string	nextMove;
 
+		this->gameInfo();
 		while (!this->endGame())
 		{
-			cout << "Give me a move: " << endl;
+			this->print();
+			cout << "Give me a valid move: " << endl;
 			cin >> nextMove;
 			cin.clear();
 
 			this->playUser(nextMove);
 		}
-	}
-
-	void	BoardGame2D::print()
-	{
-		cout << (*this);
 	}
 
 	void	playVector(vector<BoardGame2D*> gameVec)
@@ -44,5 +42,11 @@ namespace bg2d
 		{
 			game->playAutoAll();
 		}
+	}
+
+	ostream&	operator<<(ostream& output, const BoardGame2D& obj)
+	{
+		obj.print();
+		return (output);
 	}
 }
