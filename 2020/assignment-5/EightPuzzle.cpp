@@ -2,6 +2,7 @@
 #include <algorithm>
 #include <iostream>
 #include <thread>
+#include <fstream>
 
 using namespace std;
 
@@ -81,24 +82,24 @@ namespace	bg2d
 
 			switch (rand() % 4)
 			{
-			case 0:
-				direction = "U";
-				break;
-			
-			case 1:
-				direction = "D";
-				break;
+				case 0:
+					direction = "U";
+					break;
+				
+				case 1:
+					direction = "D";
+					break;
 
-			case 2:
-				direction = "L";
-				break;
+				case 2:
+					direction = "L";
+					break;
 
-			case 3:
-				direction = "R";
-				break;
-			
-			default:
-				break;
+				case 3:
+					direction = "R";
+					break;
+				
+				default:
+					break;
 			}
 		} while (!(this->isValidMove(row, column, direction)));
 	}
@@ -115,6 +116,7 @@ namespace	bg2d
 	bool	EightPuzzle::isValidMove(int row, int column, string direction) const
 	{
 		bool	isValid = true;
+		string	directions = "UDLR";
 
 		if (!(row <= 2 && row >= 0) || !(column <= 2 && column >= 0))
 			isValid = false;
@@ -129,6 +131,8 @@ namespace	bg2d
 			isValid = false;
 		else if (direction == "D" && (row >= 2 ||
 				board[row + 1][column] != -1))
+			isValid = false;
+		else if (directions.find(direction) == string::npos)
 			isValid = false;
 
 		return (isValid);
@@ -193,7 +197,7 @@ namespace	bg2d
 		return (result);
 	}
 
-	bool	EightPuzzle::endGame()
+	bool	EightPuzzle::endGame() const
 	{
 		bool	isGameFinished = true;
 
@@ -248,4 +252,37 @@ namespace	bg2d
 	{
 		cout << "Current board score is " << boardScore() << " Row(1, 2, 3) - Column(A, B, C) - '-' -  Direction(U, D, L, R)" << endl;
 	}
+
+	void	EightPuzzle::writeFile()
+	{
+		fstream		file;
+		file.open("EightPuzzleLog.txt", ios_base::app);
+
+		int j;
+
+		for (int i = -1; i < 3; i++)
+		{
+			for (j = -1; j < 3; j++)
+			{
+				if (i == -1 && j == -1)
+					file << " \t";
+				else if (i == -1)
+					file << static_cast<char>(static_cast<int>('A') + j) << '\t';
+				else if (j == -1)
+					file << i + 1 << '\t';
+				else
+				{
+					file << this->board[i][j] << '\t';
+				}
+			}
+			file << '\n';
+		}
+		file << endl;
+
+		file << "Current board score is " << boardScore() << " Row(1, 2, 3) - Column(A, B, C) - '-' -  Direction(U, D, L, R)" << endl;
+		file << "------------------------------------------------------------------------------------------" << endl;
+	}
+
+	void	EightPuzzle::setBoardType(int temp)
+	{}
 }
