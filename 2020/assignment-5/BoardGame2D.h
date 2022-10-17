@@ -4,6 +4,8 @@
 #include <string>
 #include <vector>
 
+#define COLOUR_RED "\033[0;31m"
+#define COLOUR_YELLOW "\033[0;33m"
 #define COLOUR_BLUE "\033[0;34m"
 #define DEFAULT_COLOUR "\033[0m"
 
@@ -60,11 +62,11 @@ namespace bg2d
 		 * @return true 
 		 * @return false 
 		 */
-		virtual bool	endGame() = 0;
+		virtual bool	endGame() const = 0;
 		/**
 		 * @brief score value.
 		 * If the game is finished, it returns 0, which is the best case.
-		 * 
+		 * const function doesn't change anything
 		 */
 		virtual int	boardScore() const = 0;
 		virtual void	initialize() = 0;
@@ -79,6 +81,24 @@ namespace bg2d
 		 * 
 		 */
 		virtual void	gameInfo() const = 0;
+
+		/**
+		 * @brief for my test results
+		 * 
+		 */
+		virtual void	writeFile() = 0;
+
+		/**
+		 * @brief Set the Board Type object for PegSolitaire class
+		 * 
+		 */
+		virtual void	setBoardType(int) = 0;
+
+		/**
+		 * @brief is the game finished or not
+		 * 
+		 */
+		virtual void	isFinished() final;
 
 		friend ostream&	operator<<(ostream&, const BoardGame2D&);
 	};
