@@ -1,3 +1,6 @@
+#ifndef _EIGHTPUZZLE_H_
+#define _EIGHTPUZZLE_H_
+
 #include "BoardGame2D.h"
 
 namespace bg2d
@@ -24,3 +27,5 @@ namespace bg2d
 			vector<vector<int>>	board;
 	};
 }
+
+#endif

@@ -1,3 +1,6 @@
+#ifndef _PEGSOLITAIRE_H_
+#define _PEGSOLITAIRE_H_
+
 #include "BoardGame2D.h"
 
 enum class CellType {none, empty, peg};
@@ -74,3 +77,5 @@ namespace bg2d
 			vector <vector<Cell>> board;
 	};
 }
+
+#endif
