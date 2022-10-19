@@ -6,7 +6,7 @@ compile: main.o Tetromino.o Termino.hpp
 	@g++ main.o Tetromino.o -o main.out
 
 main.o:
-	@g++ -std=c++11 -c main.c -o main.out
+	@g++ -std=c++11 -c main.c -o main.o
 
 Tetromino.o: Tetromino.hpp
 	@g++ -std=c++11 -c Tetromino.cpp -o Tetromino.o
