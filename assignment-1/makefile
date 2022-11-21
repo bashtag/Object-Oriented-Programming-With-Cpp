@@ -1,15 +1,18 @@
 all: clean clear compile run
 
-compile: main.o Tetromino.o Termino.hpp
+compile: main.o Tetromino.o Tetris.o
 	@echo "------------------------------------------"
 	@echo "Compiling..."
-	@g++ main.o Tetromino.o -o main.out
+	@g++ main.o Tetromino.o Tetris.o -lm -o main.out
 
 main.o:
-	@g++ -std=c++11 -c main.c -o main.o
+	@g++ -std=c++11 -c main.cpp -o main.o
 
 Tetromino.o: Tetromino.hpp
 	@g++ -std=c++11 -c Tetromino.cpp -o Tetromino.o
+
+Tetris.o: Tetris.hpp
+	@g++ -std=c++11 -c Tetris.cpp -o Tetris.o
 
 run:
 	@echo "------------------------------------------"
